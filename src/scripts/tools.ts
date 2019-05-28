@@ -17,7 +17,9 @@ let notre_calcul      = 0
 export function analyse(afinn: {[key: string]: number}, textToAnalyse: string, elementDebueger: HTMLElement) {
   let words = textToAnalyse.split(/\s/);
 
-  console.log(words);
+  // console.log("analyse")
+  // console.log(words)
+  // console.log("=====")
 
   let scoredwords = [];
 
@@ -28,28 +30,44 @@ export function analyse(afinn: {[key: string]: number}, textToAnalyse: string, e
     if (afinn.hasOwnProperty(word)) {
       let score = afinn[word];
 
-      console.log(word, score);
-
       totalScore += Number(score);
 
       scoredwords.push(word + ': ' + score + ' ');
     }
   }
 
-  console.log('score: ' + totalScore);
-  console.log('comparative: ' + totalScore / words.length);
-  console.log(scoredwords);
-
   notre_calcul = totalScore / (scoredwords.length ? scoredwords.length : 1)
   total_notre_score.push(notre_calcul)
+
+  const notre_calcul_moyen = total_notre_score.reduce(getSum) / (total_notre_score.length ? total_notre_score.length : 1)
 
   elementDebueger.innerHTML = `
   <h1>score:        ${totalScore}</h1>
   <h1>comparative:  ${totalScore / words.length}</h1>
   <h1>scoredwords:  ${scoredwords}</h1>
   <h1>notre_calcul: ${notre_calcul}</h1>
-  <h1>notre_calcul total: ${total_notre_score.reduce(getSum) / (total_notre_score.length ? total_notre_score.length : 1)}</h1>
+  <h1>notre_calcul total: ${notre_calcul_moyen}</h1>
   `
 
-  return total_notre_score
+  return notre_calcul_moyen
+}
+
+export function runAudio(score: Number, data: any) {
+  // switch(true) {
+  //   case ( score.isBetween(0, 1) ):
+  //     audioPlay()
+  //   case -4:
+  //   case -3:
+  //   case -2:
+  //   case -1:
+  // }
+}
+
+
+function getRandom() {
+
+}
+
+function audioPlay() {
+
 }
