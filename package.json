@@ -5,7 +5,8 @@
   "main": "converters.js",
   "scripts": {
     "coding-game-samples": "",
-    "dev": "parcel src/index.html"
+    "api-server": "node api/server.js",
+    "dev": "parcel src/index.html & npm run api-server"
   },
   "author": "",
   "license": "ISC",

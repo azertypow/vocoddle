@@ -15,8 +15,8 @@ export function run(audioData: {[key: string]: HTMLAudioElement[]}) {
     const test = {...positive, ...negative}
     recognition.lang = "fr-FR";
 
-    recognition.continuous = false;
-    recognition.interimResults = true;
+    recognition.continuous = false
+    recognition.interimResults = true
     recognition.maxAlternatives = 5
 
     startRecognition(recognition)
