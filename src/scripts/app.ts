@@ -1,12 +1,13 @@
-import positive from "./francais_input_negative"
-import negative from "./francais_input_positive"
+import positive from "./_francais_input_negative"
+import negative from "./_francais_input_positive"
 import {analyse, runAudio, startRecognition} from "./tools"
+import {IAudioElements} from "./audioLoader"
 
 declare class webkitSpeechRecognition      extends SpeechRecognition{}
 declare class webkitSpeechGrammarList      extends SpeechGrammarList{}
 declare class webkitSpeechRecognitionEvent extends SpeechRecognitionEvent{}
 
-export function run(audioData: {[key: string]: HTMLAudioElement[]}) {
+export function run(audioData: IAudioElements) {
 
   let recognition = new webkitSpeechRecognition() as SpeechRecognition;
 
@@ -39,22 +40,22 @@ export function run(audioData: {[key: string]: HTMLAudioElement[]}) {
           console.log("pas passé: \t", transcript)
         }
       }
-
-      // speechRecognition.stop()
     })
 
     recognition.addEventListener("end", () => {
-      stringToTest = ""
+      // stringToTest = ""
 
       startRecognition(recognition)
     })
 
     const elementDebueger = document.createElement("div")
+    elementDebueger.className = "r-debugguer"
 
     document.body.appendChild(elementDebueger)
 
     recognition.addEventListener("audioend", (ev: SpeechRecognitionEventMap["audioend"]) => {
       console.log("audio end")
+      console.log("string to test:", stringToTest)
 
       const score = analyse(test as any, stringToTest, elementDebueger)
 

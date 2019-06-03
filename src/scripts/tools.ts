@@ -1,3 +1,5 @@
+import {EntriesName, IAudioElements} from "./audioLoader"
+
 declare class webkitSpeechRecognition      extends SpeechRecognition{}
 declare class webkitSpeechGrammarList      extends SpeechGrammarList{}
 declare class webkitSpeechRecognitionEvent extends SpeechRecognitionEvent{}
@@ -52,22 +54,73 @@ export function analyse(afinn: {[key: string]: number}, textToAnalyse: string, e
   return notre_calcul_moyen
 }
 
-export function runAudio(score: Number, data: any) {
-  // switch(true) {
-  //   case ( score.isBetween(0, 1) ):
-  //     audioPlay()
-  //   case -4:
-  //   case -3:
-  //   case -2:
-  //   case -1:
-  // }
+export function runAudio(score: Number, audioElements: IAudioElements) {
+
+  const levelValue = {
+    0: 0.0,
+    "-1": -0.2,
+    "-2": -0.4,
+    "-3": -0.6,
+    "-4": -0.8,
+    "-5": -1,
+  }
+
+  switch(true) {
+    case ( levelValue["-1"] <= score && score < levelValue["0"]  ):
+      audioPlay("Niveau_-1", audioElements)
+      break
+    case ( levelValue["-2"] <= score && score < levelValue["-1"]  ):
+      audioPlay("Niveau_-2", audioElements)
+      break
+    case ( levelValue["-3"] <= score && score < levelValue["-2"]  ):
+      audioPlay("Niveau_-3", audioElements)
+      break
+    case ( levelValue["-4"] <= score && score < levelValue["-3"]  ):
+      audioPlay("Niveau_-4", audioElements)
+      break
+    case ( levelValue["-5"] <= score && score < levelValue["-4"]  ):
+      audioPlay("Niveau_-5", audioElements)
+  }
 }
 
 
-function getRandom() {
-
+function getRandomInt(min: number, max: number) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min +1)) + min;
 }
 
-function audioPlay() {
+let audioIsntPlaying = true
 
+function audioPlay(entriesName: EntriesName, audioElement: IAudioElements) {
+  console.log(entriesName)
+  console.log(audioElement[entriesName])
+
+  const audioInCategory = audioElement[entriesName]
+
+  const audioEndedListener = () => {
+    console.log("ended")
+    audioIsntPlaying = true
+    removeListener()
+  }
+
+  const randomEntry = getRandomInt(0, audioInCategory.length)
+
+  if(audioIsntPlaying && audioInCategory.length) {
+
+    audioIsntPlaying = false
+
+
+    audioInCategory[randomEntry].addEventListener("ended", audioEndedListener)
+
+
+    console.log(randomEntry)
+
+    audioInCategory[randomEntry].play().then(() => {console.log("PLAYYYY")})
+  }
+
+  function removeListener() {
+    audioInCategory[randomEntry].removeEventListener("ended", audioEndedListener)
+  }
 }
+

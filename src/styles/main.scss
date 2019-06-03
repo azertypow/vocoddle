@@ -1,0 +1,115 @@
+$color-main: pink;
+$color-secondary: blue;
+
+body {
+  font-family: ".SF NS Display", sans-serif;
+  color: $color-secondary;
+  background-color: $color-main;
+  margin: 0;
+  position: relative;
+  padding: 0;
+}
+
+h1 {
+  font-size: 3rem;
+  line-height: 1.5em;
+}
+
+h2 {
+  font-size: 1.75rem;
+  font-weight: 200;
+  line-height: 1.2em;
+}
+
+p {
+  font-size: 1.75rem;
+  line-height: 1.2em;
+}
+
+h1.font-big {
+  font-size: 5rem;
+}
+
+h4 {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+}
+
+.text-bandeau {
+  white-space: nowrap;
+}
+
+.r-debugguer {
+  //display: none;
+}
+
+.r-pages {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.r-underline {
+  //&:after {
+  //  content: '';
+  //  display: inline-block;
+  //  position: absolute;
+  //  transform: translateY(80%);
+  //  bottom: 0;
+  //  left: 0;
+  //  width: 100%;
+  //  height: .75em;
+  //  background: darken($color-main, 20);
+  //}
+
+  position: relative;
+  background-size: 10px 1em;
+  display: inline;
+  padding-bottom: 0.4em;
+  box-shadow: inset 0px -0.3em darken($color-main, 20);
+}
+
+.right-content {
+  position: relative;
+  left: 33%;
+}
+
+.r-blue-bkg {
+  background-color: $color-secondary;
+  display: inline;
+  color: white;
+}
+
+.page-0 {
+  .logo-container {
+  }
+}
+
+.page-1 {
+
+}
+
+.r-button-start {
+
+}
+
+.r-centred-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+
+.page-0 {display: none} // on va avoir un son
+//.page-1 {display: none}  // annimé
+.page-2 {display: none}  // play ici
+.page-3 {display: none}
+.page-4 {display: none}
+
+// menu avec un a propos

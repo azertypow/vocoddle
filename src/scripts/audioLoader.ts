@@ -4,14 +4,12 @@ export async function getAudioFiles() {
   return await createAudioElements(audioFiles)
 }
 
-function createAudioElements(audioData: IAudio): Promise<{[key: string]: HTMLAudioElement[]}> {
+function createAudioElements(audioData: IAudio): Promise<IAudioElements> {
 
   return new Promise(resolve => {
     const audioContainer = document.createElement("div")
 
-    const audioFilesObject = {} as {
-      [key: string]: HTMLAudioElement[]
-    }
+    const audioFilesObject = {} as IAudioElements
 
     let audioCreated  = 0
     let audioLoaded   = 0
@@ -45,7 +43,7 @@ function createAudioElements(audioData: IAudio): Promise<{[key: string]: HTMLAud
 
     document.body.appendChild(audioContainer)
 
-    document.addEventListener("click", () => {audioFilesObject["Niveau_1"][0].play()})
+    // document.addEventListener("click", () => {audioFilesObject["Niveau_-1"][0].play()})
   })
 
 }
@@ -66,11 +64,22 @@ async function getAudioFilesList() {
   return await audioRequestResponse.json() as IAudio
 }
 
+export interface IAudioElements {
+  "Niveau_-1": HTMLAudioElement[]
+  "Niveau_-2": HTMLAudioElement[]
+  "Niveau_-3": HTMLAudioElement[]
+  "Niveau_-4": HTMLAudioElement[]
+  "Niveau_-5": HTMLAudioElement[]
+  [key: string]: HTMLAudioElement[]
+}
+
+export type EntriesName = keyof IAudioElements
+
 export interface IAudio {
+  "Niveau_-1": {[key: string]: string}
+  "Niveau_-2": {[key: string]: string}
+  "Niveau_-3": {[key: string]: string}
+  "Niveau_-4": {[key: string]: string}
+  "Niveau_-5": {[key: string]: string}
   [key: string]: {[key: string]: string}
-  "Niveau 1": {[key: string]: string}
-  "Niveau 2": {[key: string]: string}
-  "Niveau 3": {[key: string]: string}
-  "Niveau 4": {[key: string]: string}
-  "Niveau 5": {[key: string]: string}
 }
