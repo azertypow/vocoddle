@@ -14,16 +14,6 @@ export async function getListOfAudioFiles(): Promise<ListOfAudioFiles> {
   return await audioRequestResponse.json() as ListOfAudioFiles
 }
 
-export interface IAudioElements {
-  "Niveau_-1": HTMLAudioElement[]
-  "Niveau_-2": HTMLAudioElement[]
-  "Niveau_-3": HTMLAudioElement[]
-  "Niveau_-4": HTMLAudioElement[]
-  "Niveau_-5": HTMLAudioElement[]
-}
-
-export type EntriesName = keyof IAudioElements
-
 export enum LEVEL_NAMES {
   LEVEL_1 = "Niveau_-1",
   LEVEL_2 = "Niveau_-2",
@@ -67,6 +57,7 @@ export function generateAudioData(listOfAudioFiles: ListOfAudioFiles): IAudioDat
 
       listOfSoundFilesUrl[audioFileGeneratedName] = audioFilePath
     }
+
   }
 
   return {

@@ -1,4 +1,4 @@
-import {EntriesName, IAudioData, IAudioElements} from "./audioLoader"
+import {IAudioData} from "./audioLoader"
 
 declare class webkitSpeechRecognition      extends SpeechRecognition{}
 
@@ -106,37 +106,14 @@ function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
+/**
+ * todo
+ */
+
 let audioIsNotPlaying = true
 
-function audioPlay(entriesName: EntriesName, audioElement: IAudioElements) {
-  console.log(entriesName)
-  console.log(audioElement[entriesName])
+function audioPlay() {
 
-  const audioInCategory = audioElement[entriesName]
-
-  const audioEndedListener = () => {
-    console.log("ended")
-    audioIsNotPlaying = true
-    removeListener()
-  }
-
-  const randomEntry = getRandomInt(0, audioInCategory.length)
-
-  if(audioIsNotPlaying && audioInCategory.length) {
-
-    audioIsNotPlaying = false
-
-
-    audioInCategory[randomEntry].addEventListener("ended", audioEndedListener)
-
-
-    console.log(randomEntry)
-
-    audioInCategory[randomEntry].play().then(() => {console.log("PLAYYYY")})
-  }
-
-  function removeListener() {
-    audioInCategory[randomEntry].removeEventListener("ended", audioEndedListener)
-  }
+  // get audio ended info
 }
 
