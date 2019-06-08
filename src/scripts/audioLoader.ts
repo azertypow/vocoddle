@@ -1,54 +1,4 @@
-export async function getAudioFiles() {
-  const audioFiles = await getAudioFilesList()
-
-  return await createAudioElements(audioFiles)
-}
-
-function createAudioElements(audioData: IAudio): Promise<IAudioElements> {
-
-  return new Promise(resolve => {
-    const audioContainer = document.createElement("div")
-
-    const audioFilesObject = {} as IAudioElements
-
-    let audioCreated  = 0
-    let audioLoaded   = 0
-
-    for(const levelName in audioData) {
-      const audioFiles = audioData[levelName]
-
-      audioFilesObject[levelName] = []
-
-      for(const audioName in audioFiles) {
-        if(audioFiles.hasOwnProperty(audioName)) {
-          const audioElement = document.createElement("audio")
-          audioElement.preload = "auto"
-          audioElement.src = `http://localhost:3000/static/${audioFiles[audioName]}`
-
-          audioCreated++
-
-          audioElement.addEventListener("canplay", () => {
-            audioLoaded++
-            console.log(audioCreated)
-            console.log(audioLoaded)
-
-            if(audioCreated === audioLoaded) resolve(audioFilesObject)
-          })
-
-          audioFilesObject[levelName].push(audioElement)
-          audioContainer.appendChild(audioElement)
-        }
-      }
-    }
-
-    document.body.appendChild(audioContainer)
-
-    // document.addEventListener("click", () => {audioFilesObject["Niveau_-1"][0].play()})
-  })
-
-}
-
-async function getAudioFilesList() {
+export async function getListOfAudioFiles(): Promise<ListOfAudioFiles> {
   const myHeaders = new Headers();
 
   const myInit = {
@@ -61,7 +11,7 @@ async function getAudioFilesList() {
 
   const audioRequestResponse = await fetch(listOfAudioRequest,myInit as any)
 
-  return await audioRequestResponse.json() as IAudio
+  return await audioRequestResponse.json() as ListOfAudioFiles
 }
 
 export interface IAudioElements {
@@ -70,16 +20,70 @@ export interface IAudioElements {
   "Niveau_-3": HTMLAudioElement[]
   "Niveau_-4": HTMLAudioElement[]
   "Niveau_-5": HTMLAudioElement[]
-  [key: string]: HTMLAudioElement[]
 }
 
 export type EntriesName = keyof IAudioElements
 
-export interface IAudio {
-  "Niveau_-1": {[key: string]: string}
-  "Niveau_-2": {[key: string]: string}
-  "Niveau_-3": {[key: string]: string}
-  "Niveau_-4": {[key: string]: string}
-  "Niveau_-5": {[key: string]: string}
-  [key: string]: {[key: string]: string}
+export enum LEVEL_NAMES {
+  LEVEL_1 = "Niveau_-1",
+  LEVEL_2 = "Niveau_-2",
+  LEVEL_3 = "Niveau_-3",
+  LEVEL_4 = "Niveau_-4",
+  LEVEL_5 = "Niveau_-5",
+}
+export type LevelName = keyof typeof LEVEL_NAMES
+
+export type ListOfAudioFiles = {
+  [key in LevelName]: {[key: string]: string}
+}
+
+export function generateAudioData(listOfAudioFiles: ListOfAudioFiles): IAudioData {
+
+  const listOfAudioFilesNameByLevel: ListOfAudioFilesNameByLevel = {
+    LEVEL_1: [],
+    LEVEL_2: [],
+    LEVEL_3: [],
+    LEVEL_4: [],
+    LEVEL_5: [],
+  }
+
+  const listOfSoundFilesUrl: ListOfSoundFilesUrl = {}
+
+  for(const key in listOfAudioFiles) {
+
+    const audioFilesLevelName = key as LevelName
+
+    listOfAudioFilesNameByLevel[audioFilesLevelName] = []
+
+    const listOfAudioFilesInLevel = listOfAudioFiles[audioFilesLevelName]
+
+    for(const audioFileName in listOfAudioFilesInLevel) {
+
+      const audioFileGeneratedName = `${audioFilesLevelName}_${audioFileName}`
+
+      const audioFilePath = listOfAudioFilesInLevel[audioFileName]
+
+      listOfAudioFilesNameByLevel[audioFilesLevelName].push(audioFileGeneratedName)
+
+      listOfSoundFilesUrl[audioFileGeneratedName] = audioFilePath
+    }
+  }
+
+  return {
+    listOfAudioFilesNameByLevel,
+    listOfSoundFilesUrl,
+  }
+}
+
+export interface IAudioData {
+  listOfAudioFilesNameByLevel: ListOfAudioFilesNameByLevel,
+  listOfSoundFilesUrl: ListOfSoundFilesUrl,
+}
+
+export type ListOfAudioFilesNameByLevel = {
+  [levelName in LevelName]: string[]
+}
+
+export type ListOfSoundFilesUrl = {
+  [name: string]: string
 }

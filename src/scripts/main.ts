@@ -1,41 +1,7 @@
-import {getAudioFiles} from "./audioLoader"
+import {generateAudioData, getListOfAudioFiles, LevelName, ListOfAudioFiles} from "./audioLoader"
 import {run} from "./app"
 import {ListenStatus} from "./ListenStatus"
-import {Chorus, Distortion, Filter, PingPongDelay, Player, Players, Reverb, Vibrato, Volume} from "tone"
-
-getAudioFiles().then((audioElementsByLevel) => {
-  let listen = new ListenStatus(() => {
-    console.log("change!!!")
-  })
-
-  document.addEventListener("mousedown", () => {
-    listen.active = false
-    console.log("down")
-    document.body.classList.add("listen-off")
-  })
-
-  document.addEventListener("mouseup", () => {
-    listen.active = true
-    console.log("up")
-    document.body.classList.remove("listen-off")
-  })
-
-  run(audioElementsByLevel, listen)
-})
-
-//
-// const reverb = new Reverb(100000).toMaster()
-//
-// const player = new Player("https://tonejs.github.io/examples/audio/FWDL.mp3")
-//   .connect(reverb)
-//   .toMaster()
-//
-// document.addEventListener("click", () => {
-//
-//   console.log(player)
-//
-//   player.start()
-// })
+import {Chorus, Distortion, Filter, PingPongDelay, Player, Players, Reverb, Vibrato} from "tone"
 
 const chorus      = new Chorus(4, 2.5, 0.5).toMaster()
 const reverb      = new Reverb().toMaster()
@@ -65,7 +31,6 @@ reverb.generate().then(() => {
       // .connect(distortion)
       .toMaster()
 
-
   document.addEventListener("click", () => {
 
     console.log(sounds)
@@ -80,4 +45,28 @@ reverb.generate().then(() => {
       test.start()
     }
   })
+})
+
+getListOfAudioFiles().then( (listOfAudioFiles) => {
+
+  let listen = new ListenStatus(() => {
+    console.log("change!!!")
+  })
+
+  document.addEventListener("mousedown", () => {
+    listen.active = false
+    console.log("down")
+    document.body.classList.add("listen-off")
+  })
+
+  document.addEventListener("mouseup", () => {
+    listen.active = true
+    console.log("up")
+    document.body.classList.remove("listen-off")
+  })
+
+  const audioData = generateAudioData(listOfAudioFiles)
+
+  run(audioData, listen)
+
 })

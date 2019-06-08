@@ -1,8 +1,6 @@
-import {EntriesName, IAudioElements} from "./audioLoader"
+import {EntriesName, IAudioData, IAudioElements} from "./audioLoader"
 
 declare class webkitSpeechRecognition      extends SpeechRecognition{}
-declare class webkitSpeechGrammarList      extends SpeechGrammarList{}
-declare class webkitSpeechRecognitionEvent extends SpeechRecognitionEvent{}
 
 export function startRecognition(speechRecognition :webkitSpeechRecognition) {
   console.log("recognition start")
@@ -16,7 +14,7 @@ function getSum(total: number, num: number) {
 let arrayOfAllScoreOfText: number[] = []
 let scoreOfText      = 0
 
-export function analyse(afinn: {[key: string]: number}, textToAnalyse: string, elementDebueger: HTMLElement) {
+export function analyse(afinn: {[key: string]: number}, textToAnalyse: string): IAnalyseResponse {
   let words = textToAnalyse.split(/\s/)
 
   let arrayOfScoredWordsInfo: {word: string, value: number}[] = []
@@ -44,19 +42,35 @@ export function analyse(afinn: {[key: string]: number}, textToAnalyse: string, e
   
   const scoreOfEntierDiscution = sumOfAllScoredOfText / (arrayOfAllScoreOfText.length ? arrayOfAllScoreOfText.length : 1)
 
-  elementDebueger.innerHTML = `
-  <h1>score total des mots:        ${totalOfWordsScoreInTextToAnalyse}</h1>
-  <h1>moyenne avec l'ensemble des mots:  ${totalOfWordsScoreInTextToAnalyse / words.length}</h1>
-  <h1>moyenne avec selement les mots qui on matché:  ${scoreOfText}</h1>
-  <h1>scoredwords:  ${arrayOfScoredWordsInfo}</h1>
-  <h1>score du text entrant: ${scoreOfText}</h1>
-  <h1>score de la discution (moyenne des scores de text): ${scoreOfEntierDiscution}</h1>
-  `
-
-  return scoreOfEntierDiscution
+  return {
+    scoreOfEntierDiscution,
+    info: {
+      score_total_des_mots:                           totalOfWordsScoreInTextToAnalyse,
+      moyenne_avec_l_ensemble_des_mots:               totalOfWordsScoreInTextToAnalyse / words.length,
+      moyenne_avec_seulement_les_mots_qui_on_matche:  scoreOfText,
+      list_des_mots_qui_ont_matche_avec_leur_score:   arrayOfScoredWordsInfo,
+      score_du_text_entrant:                          scoreOfText,
+      score_de_la_discution:                          scoreOfEntierDiscution,
+    }
+  }
 }
 
-export function runAudio(score: Number, audioElements: IAudioElements) {
+export interface IAnalyseResponse {
+  scoreOfEntierDiscution: number;
+  info: {
+    moyenne_avec_seulement_les_mots_qui_on_matche: number;
+    score_total_des_mots: number;
+    moyenne_avec_l_ensemble_des_mots: number;
+    score_de_la_discution: number;
+    score_du_text_entrant: number;
+    list_des_mots_qui_ont_matche_avec_leur_score: {
+      word: string;
+      value: number
+    }[]
+  }
+}
+
+export function runAudio(score: Number, audioElements: IAudioData) {
 
   const levelValue = {
     0: 0,
@@ -67,22 +81,22 @@ export function runAudio(score: Number, audioElements: IAudioElements) {
     "-5": -5,
   }
 
-  switch(true) {
-    case ( levelValue["-1"] <= score && score < levelValue["0"]  ):
-      audioPlay("Niveau_-1", audioElements)
-      break
-    case ( levelValue["-2"] <= score && score < levelValue["-1"]  ):
-      audioPlay("Niveau_-2", audioElements)
-      break
-    case ( levelValue["-3"] <= score && score < levelValue["-2"]  ):
-      audioPlay("Niveau_-3", audioElements)
-      break
-    case ( levelValue["-4"] <= score && score < levelValue["-3"]  ):
-      audioPlay("Niveau_-4", audioElements)
-      break
-    case ( levelValue["-5"] <= score && score < levelValue["-4"]  ):
-      audioPlay("Niveau_-5", audioElements)
-  }
+  // switch(true) {
+  //   case ( levelValue["-1"] <= score && score < levelValue["0"]  ):
+  //     audioPlay("Niveau_-1", audioElements)
+  //     break
+  //   case ( levelValue["-2"] <= score && score < levelValue["-1"]  ):
+  //     audioPlay("Niveau_-2", audioElements)
+  //     break
+  //   case ( levelValue["-3"] <= score && score < levelValue["-2"]  ):
+  //     audioPlay("Niveau_-3", audioElements)
+  //     break
+  //   case ( levelValue["-4"] <= score && score < levelValue["-3"]  ):
+  //     audioPlay("Niveau_-4", audioElements)
+  //     break
+  //   case ( levelValue["-5"] <= score && score < levelValue["-4"]  ):
+  //     audioPlay("Niveau_-5", audioElements)
+  // }
 }
 
 
@@ -92,7 +106,7 @@ function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min
 }
 
-let audioIsntPlaying = true
+let audioIsNotPlaying = true
 
 function audioPlay(entriesName: EntriesName, audioElement: IAudioElements) {
   console.log(entriesName)
@@ -102,15 +116,15 @@ function audioPlay(entriesName: EntriesName, audioElement: IAudioElements) {
 
   const audioEndedListener = () => {
     console.log("ended")
-    audioIsntPlaying = true
+    audioIsNotPlaying = true
     removeListener()
   }
 
   const randomEntry = getRandomInt(0, audioInCategory.length)
 
-  if(audioIsntPlaying && audioInCategory.length) {
+  if(audioIsNotPlaying && audioInCategory.length) {
 
-    audioIsntPlaying = false
+    audioIsNotPlaying = false
 
 
     audioInCategory[randomEntry].addEventListener("ended", audioEndedListener)

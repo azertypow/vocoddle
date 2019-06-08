@@ -1,70 +1,103 @@
 import positive from "./_francais_input_negative"
 import negative from "./_francais_input_positive"
-import {analyse, runAudio, startRecognition} from "./tools"
-import {IAudioElements} from "./audioLoader"
+import {analyse, IAnalyseResponse, runAudio, startRecognition} from "./tools"
+import {IAudioData, IAudioElements} from "./audioLoader"
 import {ListenStatus} from "./ListenStatus"
 
-declare class webkitSpeechRecognition      extends SpeechRecognition{}
-declare class webkitSpeechGrammarList      extends SpeechGrammarList{}
-declare class webkitSpeechRecognitionEvent extends SpeechRecognitionEvent{}
+declare class webkitSpeechRecognition extends SpeechRecognition{}
 
-export function run(audioElementsByLevel: IAudioElements, listen: ListenStatus) {
+export function run(audioData: IAudioData, listen: ListenStatus) {
 
   let recognition = new webkitSpeechRecognition() as SpeechRecognition;
 
   // const test = {...english}
   // recognition.lang = "en-US";
-    const test = {...positive, ...negative}
-    recognition.lang = "fr-FR";
+  const test = {...positive, ...negative}
+  recognition.lang = "fr-FR";
 
-    recognition.continuous = false
-    recognition.interimResults = false
-    recognition.maxAlternatives = 1
+  recognition.continuous = false
+  recognition.interimResults = false
+  recognition.maxAlternatives = 1
 
-    startRecognition(recognition)
+  startRecognition(recognition)
 
-    recognition.addEventListener("result", (ev: SpeechRecognitionEventMap["result"]) => {
+  const debugInterface = new DebugInterface()
 
-      console.log(listen.active)
+  recognition.addEventListener("result", (ev: SpeechRecognitionEventMap["result"]) => {
 
-      if(listen.active) {
-        for (let i = 0; i < ev.results.length; i++) {
+    console.log(listen.active)
 
-          const result = ev.results[i][0]
+    if(listen.active) {
+      for (let i = 0; i < ev.results.length; i++) {
 
-          const confidence = result.confidence
-          const transcript = result.transcript.toLowerCase()
+        const result = ev.results[i][0]
 
-          console.log(ev)
-          console.log(result)
+        const confidence = result.confidence
+        const transcript = result.transcript.toLowerCase()
 
-          console.log("passé: \t", transcript)
+        console.log(ev)
+        console.log(result)
 
-          const score = analyse(test as any, transcript, elementDebueger)
+        console.log("passé: \t", transcript)
 
-          console.log(score)
+        const score = analyse(test as any, transcript)
 
-          runAudio(score, audioElementsByLevel)
-        }
+        console.log(score.scoreOfEntierDiscution)
+
+        runAudio(score.scoreOfEntierDiscution, audioData)
+
+        debugInterface.setAnalyseResponseView(score)
       }
+    }
 
-    })
+  })
 
-    recognition.addEventListener("end", () => {
-      startRecognition(recognition)
-    })
+  recognition.addEventListener("end", () => {
+    startRecognition(recognition)
+  })
+}
 
-    const elementDebueger = document.createElement("div")
-    elementDebueger.className = "r-debugguer"
+class DebugInterface {
+  private _elementDebueger = document.createElement("div")
 
-    document.body.appendChild(elementDebueger)
+  private _score                                           = this.createDivElement()
+  private _moyenne_avec_l_ensemble_des_mots                = this.createDivElement()
+  private _moyenne_avec_seulement_les_mots_qui_on_matche   = this.createDivElement()
+  private _score_de_la_discution                           = this.createDivElement()
+  private _score_du_text_entrant                           = this.createDivElement()
+  private _score_total_des_mots                            = this.createDivElement()
+  private _list_des_mots_qui_ont_matche_avec_leur_score    = this.createDivElement()
 
-  // recognition.addEventListener("audiostart",        () => console.log('audiostart'))
-  // recognition.addEventListener("error",             () => console.log('error'))
-  // recognition.addEventListener("nomatch",           () => console.log('nomatch'))
-  // recognition.addEventListener("soundend",          () => console.log('soundend'))
-  // recognition.addEventListener("soundstart",        () => console.log('soundstart'))
-  // recognition.addEventListener("speechend",         () => console.log('speechend'))
-  // recognition.addEventListener("speechstart",       () => console.log('speechstart'))
-  // recognition.addEventListener("start",             () => console.log('start'))
+  constructor() {
+    this._elementDebueger.className = "r-debugguer"
+
+    document.body.appendChild(this._elementDebueger)
+  }
+
+  setAnalyseResponseView(analyseResponse: IAnalyseResponse) {
+    this._score.innerText =                                         `score :                                          ${analyseResponse.scoreOfEntierDiscution}`
+    this._moyenne_avec_l_ensemble_des_mots.innerText =              `moyenne_avec_l_ensemble_des_mots :               ${analyseResponse.info.moyenne_avec_l_ensemble_des_mots}`
+    this._moyenne_avec_seulement_les_mots_qui_on_matche.innerText = `moyenne_avec_seulement_les_mots_qui_on_matche :  ${analyseResponse.info.moyenne_avec_seulement_les_mots_qui_on_matche}`
+    this._score_de_la_discution.innerText =                         `score_de_la_discution :                          ${analyseResponse.info.score_de_la_discution}`
+    this._score_du_text_entrant.innerText =                         `score_du_text_entrant :                          ${analyseResponse.info.score_du_text_entrant}`
+    this._score_total_des_mots.innerText =                          `score_total_des_mots :                           ${analyseResponse.info.score_total_des_mots}`
+    this._list_des_mots_qui_ont_matche_avec_leur_score.innerText =  `list_des_mots_qui_ont_matche_avec_leur_score:    ${DebugInterface._generateStringOfWordMatchedInfo(analyseResponse.info.list_des_mots_qui_ont_matche_avec_leur_score)}`
+  }
+
+  private createDivElement() {
+    const element = document.createElement("div")
+    this._elementDebueger.appendChild(element)
+
+    return element
+  }
+
+  private static _generateStringOfWordMatchedInfo(list_des_mots_qui_ont_matche_avec_leur_score: {word: string, value: number}[]) {
+    let stringOfWordMatchedInfo = ""
+
+    for(const wordsMatchedinfo of list_des_mots_qui_ont_matche_avec_leur_score) {
+      stringOfWordMatchedInfo += `${wordsMatchedinfo.word} : ${wordsMatchedinfo.value} `
+    }
+
+    return stringOfWordMatchedInfo
+  }
 }
