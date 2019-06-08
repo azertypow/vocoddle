@@ -2,12 +2,13 @@ import positive from "./_francais_input_negative"
 import negative from "./_francais_input_positive"
 import {analyse, runAudio, startRecognition} from "./tools"
 import {IAudioElements} from "./audioLoader"
+import {ListenStatus} from "./ListenStatus"
 
 declare class webkitSpeechRecognition      extends SpeechRecognition{}
 declare class webkitSpeechGrammarList      extends SpeechGrammarList{}
 declare class webkitSpeechRecognitionEvent extends SpeechRecognitionEvent{}
 
-export function run(audioElementsByLevel: IAudioElements) {
+export function run(audioElementsByLevel: IAudioElements, listen: ListenStatus) {
 
   let recognition = new webkitSpeechRecognition() as SpeechRecognition;
 
@@ -24,24 +25,29 @@ export function run(audioElementsByLevel: IAudioElements) {
 
     recognition.addEventListener("result", (ev: SpeechRecognitionEventMap["result"]) => {
 
-      for (let i = 0; i < ev.results.length; i++) {
+      console.log(listen.active)
 
-        const result = ev.results[i][0]
+      if(listen.active) {
+        for (let i = 0; i < ev.results.length; i++) {
 
-        const confidence = result.confidence
-        const transcript = result.transcript.toLowerCase()
+          const result = ev.results[i][0]
 
-        console.log(ev)
-        console.log(result)
+          const confidence = result.confidence
+          const transcript = result.transcript.toLowerCase()
 
-        console.log("passé: \t", transcript)
+          console.log(ev)
+          console.log(result)
 
-        const score = analyse(test as any, transcript, elementDebueger)
+          console.log("passé: \t", transcript)
 
-        console.log(score)
+          const score = analyse(test as any, transcript, elementDebueger)
 
-        runAudio(score, audioElementsByLevel)
+          console.log(score)
+
+          runAudio(score, audioElementsByLevel)
+        }
       }
+
     })
 
     recognition.addEventListener("end", () => {
