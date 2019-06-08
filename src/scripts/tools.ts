@@ -10,59 +10,61 @@ export function startRecognition(speechRecognition :webkitSpeechRecognition) {
 }
 
 function getSum(total: number, num: number) {
-  return total + num;
+  return total + num
 }
 
-let total_notre_score: number[] = []
-let notre_calcul      = 0
+let arrayOfAllScoreOfText: number[] = []
+let scoreOfText      = 0
 
 export function analyse(afinn: {[key: string]: number}, textToAnalyse: string, elementDebueger: HTMLElement) {
-  let words = textToAnalyse.split(/\s/);
+  let words = textToAnalyse.split(/\s/)
 
-  // console.log("analyse")
-  // console.log(words)
-  // console.log("=====")
+  let arrayOfScoredWordsInfo: {word: string, value: number}[] = []
 
-  let scoredwords = [];
-
-  let totalScore = 0;
+  let totalOfWordsScoreInTextToAnalyse = 0
 
   for (let i = 0; i < words.length; i++) {
-    let word = words[i].toLowerCase();
+    
+    let word = words[i].toLowerCase()
+    
     if (afinn.hasOwnProperty(word)) {
-      let score = afinn[word];
+      
+      let scoreOfWord = afinn[word]
 
-      totalScore += Number(score);
+      totalOfWordsScoreInTextToAnalyse += Number(scoreOfWord)
 
-      scoredwords.push(word + ': ' + score + ' ');
+      arrayOfScoredWordsInfo.push({word: word, value: scoreOfWord})
     }
   }
 
-  notre_calcul = totalScore / (scoredwords.length ? scoredwords.length : 1)
-  total_notre_score.push(notre_calcul)
+  scoreOfText = totalOfWordsScoreInTextToAnalyse / (arrayOfScoredWordsInfo.length ? arrayOfScoredWordsInfo.length : 1)
+  arrayOfAllScoreOfText.push(scoreOfText)
 
-  const notre_calcul_moyen = total_notre_score.reduce(getSum) / (total_notre_score.length ? total_notre_score.length : 1)
+  const sumOfAllScoredOfText = arrayOfAllScoreOfText.reduce(getSum)
+  
+  const scoreOfEntierDiscution = sumOfAllScoredOfText / (arrayOfAllScoreOfText.length ? arrayOfAllScoreOfText.length : 1)
 
   elementDebueger.innerHTML = `
-  <h1>score:        ${totalScore}</h1>
-  <h1>comparative:  ${totalScore / words.length}</h1>
-  <h1>scoredwords:  ${scoredwords}</h1>
-  <h1>notre_calcul: ${notre_calcul}</h1>
-  <h1>notre_calcul total: ${notre_calcul_moyen}</h1>
+  <h1>score total des mots:        ${totalOfWordsScoreInTextToAnalyse}</h1>
+  <h1>moyenne avec l'ensemble des mots:  ${totalOfWordsScoreInTextToAnalyse / words.length}</h1>
+  <h1>moyenne avec selement les mots qui on matché:  ${scoreOfText}</h1>
+  <h1>scoredwords:  ${arrayOfScoredWordsInfo}</h1>
+  <h1>score du text entrant: ${scoreOfText}</h1>
+  <h1>score de la discution (moyenne des scores de text): ${scoreOfEntierDiscution}</h1>
   `
 
-  return notre_calcul_moyen
+  return scoreOfEntierDiscution
 }
 
 export function runAudio(score: Number, audioElements: IAudioElements) {
 
   const levelValue = {
-    0: 0.0,
-    "-1": -0.2,
-    "-2": -0.4,
-    "-3": -0.6,
-    "-4": -0.8,
-    "-5": -1,
+    0: 0,
+    "-1": -1,
+    "-2": -2,
+    "-3": -3,
+    "-4": -4,
+    "-5": -5,
   }
 
   switch(true) {
@@ -85,9 +87,9 @@ export function runAudio(score: Number, audioElements: IAudioElements) {
 
 
 function getRandomInt(min: number, max: number) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min +1)) + min;
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min)) + min
 }
 
 let audioIsntPlaying = true

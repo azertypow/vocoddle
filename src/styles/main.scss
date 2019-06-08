@@ -1,6 +1,10 @@
 $color-main: pink;
 $color-secondary: blue;
 
+$underlin-color: darken($color-main, 20);
+
+$underline-weight: 0.3em;
+
 body {
   font-family: ".SF NS Display", sans-serif;
   color: $color-secondary;
@@ -43,6 +47,12 @@ h4 {
 
 .r-debugguer {
   //display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  > * {
+    font-size: 20px;
+  }
 }
 
 .r-pages {
@@ -70,12 +80,22 @@ h4 {
   background-size: 10px 1em;
   display: inline;
   padding-bottom: 0.4em;
-  box-shadow: inset 0px -0.3em darken($color-main, 20);
+  box-shadow: inset 0px #{ - $underline-weight} 0 -2px $underlin-color;
 }
 
 .right-content {
   position: relative;
   left: 33%;
+  top: 50%;
+  transform: translateY(-50%);
+
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .r-blue-bkg {
@@ -87,6 +107,27 @@ h4 {
 .page-0 {
   .logo-container {
   }
+}
+
+.r-title {
+  margin: 0;
+}
+
+.logo-container {
+  overflow: hidden;
+}
+
+.logo-underline {
+  display: block;
+  height: 2 * $underline-weight;
+  width: 100%;
+  background-color: $underlin-color;
+  position: relative;
+  left: 0;
+}
+
+.logo-baseline {
+  margin-top: .5em;
 }
 
 .page-1 {
@@ -106,10 +147,12 @@ h4 {
 }
 
 
-.page-0 {display: none} // on va avoir un son
+//.page-0 {display: none} // on va avoir un son
 //.page-1 {display: none}  // annimé
 .page-2 {display: none}  // play ici
 .page-3 {display: none}
 .page-4 {display: none}
 
 // menu avec un a propos
+
+@import "./intro-animation";

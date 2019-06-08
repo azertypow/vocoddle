@@ -7,7 +7,7 @@ declare class webkitSpeechRecognition      extends SpeechRecognition{}
 declare class webkitSpeechGrammarList      extends SpeechGrammarList{}
 declare class webkitSpeechRecognitionEvent extends SpeechRecognitionEvent{}
 
-export function run(audioData: IAudioElements) {
+export function run(audioElementsByLevel: IAudioElements) {
 
   let recognition = new webkitSpeechRecognition() as SpeechRecognition;
 
@@ -17,12 +17,10 @@ export function run(audioData: IAudioElements) {
     recognition.lang = "fr-FR";
 
     recognition.continuous = false
-    recognition.interimResults = true
-    recognition.maxAlternatives = 5
+    recognition.interimResults = false
+    recognition.maxAlternatives = 1
 
     startRecognition(recognition)
-
-    let stringToTest = ""
 
     recognition.addEventListener("result", (ev: SpeechRecognitionEventMap["result"]) => {
 
@@ -33,18 +31,20 @@ export function run(audioData: IAudioElements) {
         const confidence = result.confidence
         const transcript = result.transcript.toLowerCase()
 
-        if(confidence > 0.75) {
-          console.log("passé: \t", transcript)
-          stringToTest = transcript
-        } else {
-          console.log("pas passé: \t", transcript)
-        }
+        console.log(ev)
+        console.log(result)
+
+        console.log("passé: \t", transcript)
+
+        const score = analyse(test as any, transcript, elementDebueger)
+
+        console.log(score)
+
+        runAudio(score, audioElementsByLevel)
       }
     })
 
     recognition.addEventListener("end", () => {
-      // stringToTest = ""
-
       startRecognition(recognition)
     })
 
@@ -52,18 +52,6 @@ export function run(audioData: IAudioElements) {
     elementDebueger.className = "r-debugguer"
 
     document.body.appendChild(elementDebueger)
-
-    recognition.addEventListener("audioend", (ev: SpeechRecognitionEventMap["audioend"]) => {
-      console.log("audio end")
-      console.log("string to test:", stringToTest)
-
-      const score = analyse(test as any, stringToTest, elementDebueger)
-
-      console.log("score")
-      console.log(score)
-
-      runAudio(score, audioData)
-    })
 
   // recognition.addEventListener("audiostart",        () => console.log('audiostart'))
   // recognition.addEventListener("error",             () => console.log('error'))
