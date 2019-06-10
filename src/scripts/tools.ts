@@ -1,4 +1,5 @@
-import {IAudioData} from "./audioLoader"
+import {IAudioData, LEVEL_NAMES} from "./audioLoader"
+import {Chorus, Distortion, Filter, PingPongDelay, Players, Reverb, Vibrato} from "tone"
 
 declare class webkitSpeechRecognition      extends SpeechRecognition{}
 
@@ -40,11 +41,13 @@ export function analyse(afinn: {[key: string]: number}, textToAnalyse: string): 
 
   const sumOfAllScoredOfText = arrayOfAllScoreOfText.reduce(getSum)
   
-  const scoreOfEntierDiscution = sumOfAllScoredOfText / (arrayOfAllScoreOfText.length ? arrayOfAllScoreOfText.length : 1)
+  const scoreOfEntierDiscution                  = sumOfAllScoredOfText / (arrayOfAllScoreOfText.length ? arrayOfAllScoreOfText.length : 1)
+  const scoreOfEntierDiscution_testDivisionFix  = sumOfAllScoredOfText / 2
 
   return {
     scoreOfEntierDiscution,
     info: {
+      scoreOfEntierDiscution_testDivisionFix,
       score_total_des_mots:                           totalOfWordsScoreInTextToAnalyse,
       moyenne_avec_l_ensemble_des_mots:               totalOfWordsScoreInTextToAnalyse / words.length,
       moyenne_avec_seulement_les_mots_qui_on_matche:  scoreOfText,
@@ -58,6 +61,7 @@ export function analyse(afinn: {[key: string]: number}, textToAnalyse: string): 
 export interface IAnalyseResponse {
   scoreOfEntierDiscution: number;
   info: {
+    scoreOfEntierDiscution_testDivisionFix: number,
     moyenne_avec_seulement_les_mots_qui_on_matche: number;
     score_total_des_mots: number;
     moyenne_avec_l_ensemble_des_mots: number;
@@ -70,7 +74,7 @@ export interface IAnalyseResponse {
   }
 }
 
-export function runAudio(score: Number, audioElements: IAudioData) {
+export function getLevelName(score: number): LEVEL_NAMES {
 
   const levelValue = {
     0: 0,
@@ -81,26 +85,17 @@ export function runAudio(score: Number, audioElements: IAudioData) {
     "-5": -5,
   }
 
-  // switch(true) {
-  //   case ( levelValue["-1"] <= score && score < levelValue["0"]  ):
-  //     audioPlay("Niveau_-1", audioElements)
-  //     break
-  //   case ( levelValue["-2"] <= score && score < levelValue["-1"]  ):
-  //     audioPlay("Niveau_-2", audioElements)
-  //     break
-  //   case ( levelValue["-3"] <= score && score < levelValue["-2"]  ):
-  //     audioPlay("Niveau_-3", audioElements)
-  //     break
-  //   case ( levelValue["-4"] <= score && score < levelValue["-3"]  ):
-  //     audioPlay("Niveau_-4", audioElements)
-  //     break
-  //   case ( levelValue["-5"] <= score && score < levelValue["-4"]  ):
-  //     audioPlay("Niveau_-5", audioElements)
-  // }
+  switch(true) {
+    case ( levelValue["-1"] <= score && score < levelValue["0"]  )  : return LEVEL_NAMES.LEVEL_1
+    case ( levelValue["-2"] <= score && score < levelValue["-1"]  ) : return LEVEL_NAMES.LEVEL_2
+    case ( levelValue["-3"] <= score && score < levelValue["-2"]  ) : return LEVEL_NAMES.LEVEL_3
+    case ( levelValue["-4"] <= score && score < levelValue["-3"]  ) : return LEVEL_NAMES.LEVEL_4
+    default                                                         : return LEVEL_NAMES.LEVEL_5
+  }
 }
 
 
-function getRandomInt(min: number, max: number) {
+export function getRandomInt(min: number, max: number) {
   min = Math.ceil(min)
   max = Math.floor(max)
   return Math.floor(Math.random() * (max - min)) + min
@@ -112,8 +107,7 @@ function getRandomInt(min: number, max: number) {
 
 let audioIsNotPlaying = true
 
-function audioPlay() {
+function audioPlay(level: LEVEL_NAMES, audioData: IAudioData) {
 
-  // get audio ended info
 }
 

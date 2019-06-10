@@ -1,13 +1,14 @@
 import positive from "./_francais_input_negative"
 import negative from "./_francais_input_positive"
-import {analyse, runAudio, startRecognition} from "./tools"
-import {IAudioData} from "./audioLoader"
+import {analyse, getLevelName, startRecognition} from "./tools"
+import {IAudioData, LEVEL_NAMES} from "./audioLoader"
 import {ListenStatus} from "./ListenStatus"
 import {DebugInterface} from "./DebugInterface"
+import {PizzicatoManager} from "./PizzicatoManager"
 
 declare class webkitSpeechRecognition extends SpeechRecognition{}
 
-export function run(audioData: IAudioData, listen: ListenStatus) {
+export function runRecognitionApp(audioData: IAudioData, listen: ListenStatus) {
 
   let recognition = new webkitSpeechRecognition() as SpeechRecognition;
 
@@ -22,36 +23,66 @@ export function run(audioData: IAudioData, listen: ListenStatus) {
 
   const debugInterface = new DebugInterface()
 
-  recognition.addEventListener("result", (ev: SpeechRecognitionEventMap["result"]) => {
+  // const audioManager = new AudioManager(audioData)
 
-    console.log(listen.active)
+  const pizzicatoManager = new PizzicatoManager(audioData, "http://localhost:3000/static/")
 
-    if(listen.active) {
-      for (let i = 0; i < ev.results.length; i++) {
+  pizzicatoManager.loadAudioFiles().then(() => {
 
-        const result = ev.results[i][0]
+    recognition.addEventListener("result", (ev: SpeechRecognitionEventMap["result"]) => {
 
-        const confidence = result.confidence
-        const transcript = result.transcript.toLowerCase()
+      console.log(listen.active)
 
-        console.log(ev)
-        console.log(result)
+      if(listen.active) {
+        for (let i = 0; i < ev.results.length; i++) {
 
-        console.log("passé: \t", transcript)
+          const result = ev.results[i][0]
 
-        const score = analyse(positiveAndNegativeWordsList, transcript)
+          const confidence = result.confidence
+          const transcript = result.transcript.toLowerCase()
 
-        console.log(score.scoreOfEntierDiscution)
+          console.log(ev)
+          console.log(result)
 
-        runAudio(score.scoreOfEntierDiscution, audioData)
+          console.log("passé: \t", transcript)
 
-        debugInterface.setAnalyseResponseView(score)
+          const score = analyse(positiveAndNegativeWordsList, transcript)
+
+          console.log(score.scoreOfEntierDiscution)
+
+          // runAudio(score.scoreOfEntierDiscution, audioData)
+
+          // audioManager.playSound(LEVEL_NAMES.LEVEL_1)
+
+          const levelName = getLevelName(score.scoreOfEntierDiscution)
+
+          console.log(levelName)
+
+          pizzicatoManager.playLevel(levelName, score.scoreOfEntierDiscution)
+
+          debugInterface.setAnalyseResponseView(score)
+        }
       }
-    }
 
-  })
+    })
 
-  recognition.addEventListener("end", () => {
-    startRecognition(recognition)
+    recognition.addEventListener("end", () => {
+      startRecognition(recognition)
+    })
+
+    let scoreSimulation = 0
+
+    // document.addEventListener("click", (ev) => {
+    //
+    //   const incrementation = ev.altKey ? .2 : .5
+    //
+    //   if(ev.shiftKey) scoreSimulation += incrementation
+    //   else scoreSimulation -= incrementation
+    //
+    //   console.log(scoreSimulation)
+    //
+    //   pizzicatoManager.playLevel(getLevelName(scoreSimulation), scoreSimulation)
+    // })
+
   })
 }

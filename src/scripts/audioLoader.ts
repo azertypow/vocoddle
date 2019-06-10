@@ -21,27 +21,26 @@ export enum LEVEL_NAMES {
   LEVEL_4 = "Niveau_-4",
   LEVEL_5 = "Niveau_-5",
 }
-export type LevelName = keyof typeof LEVEL_NAMES
 
 export type ListOfAudioFiles = {
-  [key in LevelName]: {[key: string]: string}
+  [key in LEVEL_NAMES]: {[key: string]: string}
 }
 
 export function generateAudioData(listOfAudioFiles: ListOfAudioFiles): IAudioData {
 
   const listOfAudioFilesNameByLevel: ListOfAudioFilesNameByLevel = {
-    LEVEL_1: [],
-    LEVEL_2: [],
-    LEVEL_3: [],
-    LEVEL_4: [],
-    LEVEL_5: [],
+    "Niveau_-1": [],
+    "Niveau_-2": [],
+    "Niveau_-3": [],
+    "Niveau_-4": [],
+    "Niveau_-5": [],
   }
 
   const listOfSoundFilesUrl: ListOfSoundFilesUrl = {}
 
   for(const key in listOfAudioFiles) {
 
-    const audioFilesLevelName = key as LevelName
+    const audioFilesLevelName = key as LEVEL_NAMES
 
     listOfAudioFilesNameByLevel[audioFilesLevelName] = []
 
@@ -51,7 +50,7 @@ export function generateAudioData(listOfAudioFiles: ListOfAudioFiles): IAudioDat
 
       const audioFileGeneratedName = `${audioFilesLevelName}_${audioFileName}`
 
-      const audioFilePath = listOfAudioFilesInLevel[audioFileName]
+      const audioFilePath = "http://localhost:3000/static/" + listOfAudioFilesInLevel[audioFileName]
 
       listOfAudioFilesNameByLevel[audioFilesLevelName].push(audioFileGeneratedName)
 
@@ -72,7 +71,7 @@ export interface IAudioData {
 }
 
 export type ListOfAudioFilesNameByLevel = {
-  [levelName in LevelName]: string[]
+  [levelName in LEVEL_NAMES]: string[]
 }
 
 export type ListOfSoundFilesUrl = {
