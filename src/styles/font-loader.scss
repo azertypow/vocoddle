@@ -1,0 +1,187 @@
+/**
+  EUCLID
+*/
+
+@font-face {
+  font-family: euclid;
+  src: url("../fonts/Euclid Circular A/EuclidCircularA-Bold.otf");
+  font-weight: 700;
+}
+@font-face {
+  font-family: euclid;
+  src: url("../fonts/Euclid Circular A/EuclidCircularA-BoldItalic.otf");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: euclid;
+  src: url("../fonts/Euclid Circular A/EuclidCircularA-Semibold.otf");
+  font-weight: 600;
+}
+@font-face {
+  font-family: euclid;
+  src: url("../fonts/Euclid Circular A/EuclidCircularA-SemiboldItalic.otf");
+  font-style: italic;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: euclid;
+  src: url("../fonts/Euclid Circular A/EuclidCircularA-Medium.otf");
+  font-weight: 500;
+}
+@font-face {
+  font-family: euclid;
+  src: url("../fonts/Euclid Circular A/EuclidCircularA-MediumItalic.otf");
+  font-style: italic;
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: euclid;
+  src: url("../fonts/Euclid Circular A/EuclidCircularA-Regular.otf");
+  font-weight: 400;
+}
+@font-face {
+  font-family: euclid;
+  src: url("../fonts/Euclid Circular A/EuclidCircularA-RegularItalic.otf");
+  font-style: italic;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: euclid;
+  src: url("../fonts/Euclid Circular A/EuclidCircularA-Light.otf");
+  font-weight: 300;
+}
+@font-face {
+  font-family: euclid;
+  src: url("../fonts/Euclid Circular A/EuclidCircularA-LightItalic.otf");
+  font-style: italic;
+  font-weight: 300;
+}
+
+
+/**
+  INTER
+*/
+
+// desactive weight font unexisted for euclide
+
+//@font-face {
+//  font-family: poppinsUI;
+//  src: url("../fonts/inter/Inter-Black.otf");
+//    font-style: normal;
+//    font-weight: 900;
+//}
+//@font-face {
+//  font-family: poppinsUI;
+//  src: url("../fonts/inter/Inter-BlackItalic.otf");
+//    font-style: italic;
+//    font-weight: 900;
+//}
+//
+//@font-face {
+//  font-family: poppinsUI;
+//  src: url("../fonts/inter/Inter-ExtraBold.otf");
+//    font-style: normal;
+//    font-weight: 800;
+//}
+//@font-face {
+//  font-family: poppinsUI;
+//  src: url("../fonts/inter/Inter-ExtraBoldItalic.otf");
+//    font-style: italic;
+//    font-weight: 800;
+//}
+
+@font-face {
+  font-family: poppinsUI;
+  src: url("../fonts/inter/Inter-Bold.otf");
+    font-style: normal;
+    font-weight: 700;
+}
+@font-face {
+  font-family: poppinsUI;
+  src: url("../fonts/inter/Inter-BoldItalic.otf");
+    font-style: italic;
+    font-weight: 700;
+}
+
+@font-face {
+  font-family: poppinsUI;
+  src: url("../fonts/inter/Inter-SemiBold.otf");
+    font-style: normal;
+    font-weight: 600;
+}
+@font-face {
+  font-family: poppinsUI;
+  src: url("../fonts/inter/Inter-SemiBoldItalic.otf");
+    font-style: italic;
+    font-weight: 600;
+}
+
+@font-face {
+  font-family: poppinsUI;
+  src: url("../fonts/inter/Inter-Medium.otf");
+    font-style: normal;
+    font-weight: 500;
+}
+@font-face {
+  font-family: poppinsUI;
+  src: url("../fonts/inter/Inter-MediumItalic.otf");
+    font-style: italic;
+    font-weight: 500;
+}
+
+@font-face {
+  font-family: poppinsUI;
+  src: url("../fonts/inter/Inter-Regular.otf");
+  font-style: normal;
+  font-weight: 400;
+}
+@font-face {
+  font-family: poppinsUI;
+  src: url("../fonts/inter/Inter-Italic.otf");
+    font-style: italic;
+    font-weight: 400;
+}
+
+@font-face {
+  font-family: poppinsUI;
+  src: url("../fonts/inter/Inter-Light-BETA.otf");
+    font-style: normal;
+    font-weight: 300;
+}
+@font-face {
+  font-family: poppinsUI;
+  src: url("../fonts/inter/Inter-LightItalic-BETA.otf");
+    font-style: italic;
+    font-weight: 300;
+}
+
+//@font-face {
+//  font-family: poppinsUI;
+//  src: url("../fonts/inter/Inter-ExtraLight-BETA.otf");
+//    font-style: normal;
+//    font-weight: 200;
+//}
+//@font-face {
+//  font-family: poppinsUI;
+//  src: url("../fonts/inter/Inter-ExtraLightItalic-BETA.otf");
+//    font-style: italic;
+//    font-weight: 200;
+//}
+//
+//@font-face {
+//  font-family: poppinsUI;
+//  src: url("../fonts/inter/Inter-Thin-BETA.otf");
+//    font-style: normal;
+//    font-weight: 100;
+//}
+//@font-face {
+//  font-family: poppinsUI;
+//  src: url("../fonts/inter/Inter-ThinItalic-BETA.otf");
+//  font-style: italic;
+//  font-weight: 100;
+//}

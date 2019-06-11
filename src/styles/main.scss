@@ -1,12 +1,12 @@
-$color-main: pink;
-$color-secondary: blue;
+@import "font-loader";
+
+$color-main:      hsl(5, 100%, 90%);
+$color-secondary: hsl(228, 89%, 42%);
 
 $underlin-color: darken($color-main, 20);
 
-$underline-weight: 0.3em;
-
 body {
-  font-family: ".SF NS Display", sans-serif;
+  font-family: euclid, ".SF NS Display", sans-serif;
   color: $color-secondary;
   background-color: $color-main;
   margin: 0;
@@ -15,18 +15,21 @@ body {
 }
 
 h1 {
-  font-size: 3rem;
-  line-height: 1.5em;
+  font-size: 7vh;
+  line-height: 1.75em;
+  font-weight: 500;
+  margin-top: 1.5em;
+  margin-bottom: .75em;
 }
 
 h2 {
-  font-size: 1.75rem;
+  font-size: 4vh;
   font-weight: 200;
-  line-height: 1.2em;
+  line-height: 1.5em;
 }
 
 p {
-  font-size: 1.75rem;
+  font-size: 3vh;
   line-height: 1.2em;
 }
 
@@ -36,9 +39,15 @@ h1.font-big {
 
 h4 {
   color: white;
-  font-size: 1.5rem;
+  font-size: 2.5vh;
   font-weight: 400;
   letter-spacing: 0.1em;
+}
+
+.r-intro-logo {
+  height: 7vh;
+  width: auto;
+  display: block;
 }
 
 .text-bandeau {
@@ -80,12 +89,13 @@ h4 {
   background-size: 10px 1em;
   display: inline;
   padding-bottom: 0.4em;
-  box-shadow: inset 0px #{ - $underline-weight} 0 -2px $underlin-color;
+  box-shadow: inset 0px -0.2em 0 -2px $color-main, inset 0px -0.45em 0 -2px $underlin-color;
 }
 
 .right-content {
   position: relative;
-  left: 33%;
+  left: calc(100% / 12 * 4);
+  width: calc(100% - (100% / 12 * 4));
   top: 50%;
   transform: translateY(-50%);
 
@@ -96,15 +106,20 @@ h4 {
   > *:last-child {
     margin-bottom: 0;
   }
+
+  > h1:first-child {
+    margin-top: -0.2em;
+  }
 }
 
-.r-blue-bkg {
-  background-color: $color-secondary;
-  display: inline;
+.r-font-bkg-blue {
   color: white;
+  background-color: blue;
+  height: 1ex;
+  padding: .2em 0.4em;
 }
 
-.page-0 {
+.r-page-0 {
   .logo-container {
   }
 }
@@ -119,23 +134,39 @@ h4 {
 
 .logo-underline {
   display: block;
-  height: 2 * $underline-weight;
   width: 100%;
   background-color: $underlin-color;
   position: relative;
   left: 0;
+  margin-top: 1.2vh;
+  height: 1.5vh;
 }
 
 .logo-baseline {
   margin-top: .5em;
 }
 
-.page-1 {
+.r-page-1 {
 
 }
 
 .r-button-start {
+}
 
+.r-button {
+  display: inline-block;
+  margin: 0;
+
+  > * {
+    display: inline-block;
+  }
+
+  &.with-arrow {
+    &:after {
+      content: "->";
+      font-family: poppinsUI, ".SF NS Display", sans-serif;
+    }
+  }
 }
 
 .r-centred-content {
@@ -149,8 +180,8 @@ h4 {
 
 //.page-0 {display: none} // on va avoir un son
 //.page-1 {display: none}  // annimé
-.page-2 {display: none}  // play ici
-.page-3 {display: none}
+.r-page-2 {display: none}  // play ici
+.r-page-3 {display: none}
 .page-4 {display: none}
 
 // menu avec un a propos
