@@ -1,5 +1,4 @@
 import {IAudioData, LEVEL_NAMES} from "./audioLoader"
-import {Chorus, Distortion, Filter, PingPongDelay, Players, Reverb, Vibrato} from "tone"
 
 declare class webkitSpeechRecognition      extends SpeechRecognition{}
 
@@ -90,7 +89,8 @@ export function getLevelName(score: number): LEVEL_NAMES {
     case ( levelValue["-2"] <= score && score < levelValue["-1"]  ) : return LEVEL_NAMES.LEVEL_2
     case ( levelValue["-3"] <= score && score < levelValue["-2"]  ) : return LEVEL_NAMES.LEVEL_3
     case ( levelValue["-4"] <= score && score < levelValue["-3"]  ) : return LEVEL_NAMES.LEVEL_4
-    default                                                         : return LEVEL_NAMES.LEVEL_5
+    case ( levelValue["-5"] <= score && score < levelValue["-4"]  ) : return LEVEL_NAMES.LEVEL_5
+    default                                                         : return LEVEL_NAMES.LEVEL_0
   }
 }
 

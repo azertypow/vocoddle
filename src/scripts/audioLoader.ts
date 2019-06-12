@@ -15,6 +15,7 @@ export async function getListOfAudioFiles(): Promise<ListOfAudioFiles> {
 }
 
 export enum LEVEL_NAMES {
+  LEVEL_0 = "Niveau_0",
   LEVEL_1 = "Niveau_-1",
   LEVEL_2 = "Niveau_-2",
   LEVEL_3 = "Niveau_-3",
@@ -29,11 +30,12 @@ export type ListOfAudioFiles = {
 export function generateAudioData(listOfAudioFiles: ListOfAudioFiles): IAudioData {
 
   const listOfAudioFilesNameByLevel: ListOfAudioFilesNameByLevel = {
-    "Niveau_-1": [],
-    "Niveau_-2": [],
-    "Niveau_-3": [],
-    "Niveau_-4": [],
-    "Niveau_-5": [],
+    "Niveau_0"  : [],
+    "Niveau_-1" : [],
+    "Niveau_-2" : [],
+    "Niveau_-3" : [],
+    "Niveau_-4" : [],
+    "Niveau_-5" : [],
   }
 
   const listOfSoundFilesUrl: ListOfSoundFilesUrl = {}

@@ -1,11 +1,15 @@
 import {generateAudioData, getListOfAudioFiles} from "./audioLoader"
 import {runRecognitionApp} from "./app"
 import {ListenStatus} from "./ListenStatus"
+import {createObjectScene} from "./ObjectScene"
 
+createObjectScene()
 
 window.addEventListener("load", () => {
 
   let audioFileLoaderIsNotStarted = true
+
+  let speachRecognitionIsNotStarting = true
 
   document.querySelector(".r-title")!.addEventListener("transitionend", (ev) => {
 
@@ -25,23 +29,24 @@ window.addEventListener("load", () => {
           console.log("change!!!")
         })
 
-        document.addEventListener("mousedown", () => {
-          listen.active = false
-          console.log("down")
-          document.body.classList.add("listen-off")
-        })
+        // document.addEventListener("mousedown", () => {
+        //   listen.active = false
+        //   console.log("down")
+        //   document.body.classList.add("listen-off")
+        // })
 
-        document.addEventListener("mouseup", () => {
-          listen.active = true
-          console.log("up")
-          document.body.classList.remove("listen-off")
-        })
+        // document.addEventListener("mouseup", () => {
+        //   listen.active = true
+        //   console.log("up")
+        //   document.body.classList.remove("listen-off")
+        // })
 
         const audioData = generateAudioData(listOfAudioFiles)
 
         document.querySelector(".r-button-start")!.addEventListener("click", () => {
           document.querySelector(".current-page-is-0")!.classList.add("current-page-is-2")
-          runRecognitionApp(audioData, listen)
+
+          if (speachRecognitionIsNotStarting) runRecognitionApp(audioData, listen)
         })
 
       })

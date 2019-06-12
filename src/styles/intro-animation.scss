@@ -71,6 +71,7 @@ $page-transition-delay: 500ms;
 .current-page-is-1 {
   .r-page-0 {
     opacity: 0;
+    z-index: 0;
     transition: opacity ($page-transition-duration - $page-transition-delay) 0s ease-in-out;
   }
 
@@ -82,5 +83,20 @@ $page-transition-delay: 500ms;
 }
 
 .current-page-is-2 {
+  .r-page-1 {
+    opacity: 0;
+    z-index: 0;
+    transition: opacity ($page-transition-duration - $page-transition-delay) $page-transition-delay ease-in-out;
+  }
 
+  .r-page-2 {
+    opacity: 1;
+    z-index: 1;
+    transition: opacity ($page-transition-duration - $page-transition-delay) $page-transition-delay ease-in-out;
+  }
+
+  #renderCanvas {
+    z-index: 10;
+    opacity: 0.7 !important;
+  }
 }

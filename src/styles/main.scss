@@ -14,6 +14,22 @@ body {
   padding: 0;
 }
 
+canvas#renderCanvas {
+  position: absolute;
+  background: $color-main;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+
+  background: none;
+  //z-index: 100;
+  //mix-blend-mode: overlay;
+  //mix-blend-mode: multiply;
+
+  pointer-events: none;
+}
+
 h1 {
   font-size: 7vh;
   line-height: 1.75em;
@@ -52,12 +68,24 @@ h4 {
 
 .text-bandeau {
   white-space: nowrap;
+
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  > .font-big:first-child {
+    margin-top: -.5em;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
 }
 
 .r-debugguer {
   //display: none;
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   > * {
     font-size: 20px;
@@ -151,6 +179,7 @@ h4 {
 }
 
 .r-button-start {
+  cursor: pointer;
 }
 
 .r-button {
@@ -177,12 +206,23 @@ h4 {
   text-align: center;
 }
 
+.r-logo-page-container {
+  position: absolute;
+  left: 2rem;
+  top: 1rem;
+
+  > img {
+    display: block;
+    height: 5vh;
+  }
+}
+
 
 //.page-0 {display: none} // on va avoir un son
 //.page-1 {display: none}  // annimé
-.r-page-2 {display: none}  // play ici
-.r-page-3 {display: none}
-.page-4 {display: none}
+//.r-page-2 {display: none}  // play ici
+//.r-page-3 {display: none}
+//.page-4 {display: none}
 
 // menu avec un a propos
 

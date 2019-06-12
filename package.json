@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babylonjs/core": "^4.0.3",
     "@types/express": "^4.16.1",
     "@types/tone": "git://github.com/Tonejs/TypeScript.git",
     "http-server": "^0.11.1",
@@ -19,6 +20,10 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
+    "@babylonjs/loaders": "^4.0.3",
+    "@babylonjs/materials": "^4.0.3",
+    "babylonjs": "^4.0.3",
+    "babylonjs-loaders": "^4.0.3",
     "express": "^4.17.1",
     "pizzicato": "^0.6.4",
     "tone": "^13.4.9"

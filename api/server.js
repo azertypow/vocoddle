@@ -25,6 +25,10 @@ app.listen(3000, () => {
     console.info(`api server run on port ${PORT_LISTING}`)
 })
 
+/**
+ * @param {string} publicDirectory
+ * @param {string} directory
+ */
 async function getFiles(publicDirectory, directory) {
     let listOfFilesPath = {}
 
@@ -32,23 +36,29 @@ async function getFiles(publicDirectory, directory) {
     const entries = await fs.readdir(entriesPath)
 
     for(const entry of entries) {
+        if(! entry.startsWith(".")) {
 
-        const entryPathRelativeToPublicDirectory = directory + "/" + entry
+            const entryPathRelativeToPublicDirectory = directory + "/" + entry
 
-        const entryPath = publicDirectory + "/" + entryPathRelativeToPublicDirectory
+            const entryPath = publicDirectory + "/" + entryPathRelativeToPublicDirectory
 
-        const entryStats = await fs.lstat(entryPath)
+            const entryStats = await fs.lstat(entryPath)
 
-        if (entryStats.isFile() && entryPath.isWaveFile()) {
-            listOfFilesPath[entry] = entryPathRelativeToPublicDirectory
-        }
-        else if (entryStats.isDirectory()) {
-            listOfFilesPath[entry] = await getFiles(publicDirectory, entryPathRelativeToPublicDirectory)
+            // @ts-ignore
+            if (entryStats.isFile() && entryPath.isWaveFile()) {
+                // @ts-ignore
+                listOfFilesPath[entry] = entryPathRelativeToPublicDirectory
+            }
+            else if (entryStats.isDirectory()) {
+                // @ts-ignore
+                listOfFilesPath[entry] = await getFiles(publicDirectory, entryPathRelativeToPublicDirectory)
+            }
         }
     }
     return listOfFilesPath
 }
 
+// @ts-ignore
 String.prototype.isWaveFile = function() {
-    return path.extname(this.toString()) === ".wav"
+    return path.extname(this.toString()) === ".wav" || ".acc"
 }
