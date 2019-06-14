@@ -8,6 +8,9 @@ import {PizzicatoManager} from "./PizzicatoManager"
 
 declare class webkitSpeechRecognition extends SpeechRecognition{}
 
+let useRecognition = new ListenStatus(() => {console.log("recognition activeted")})
+useRecognition.active = false
+
 export function runRecognitionApp(audioData: IAudioData, listen: ListenStatus) {
 
   let recognition = new webkitSpeechRecognition() as SpeechRecognition;
@@ -29,45 +32,16 @@ export function runRecognitionApp(audioData: IAudioData, listen: ListenStatus) {
 
   pizzicatoManager.loadAudioFiles().then(() => {
 
-    recognition.addEventListener("result", (ev: SpeechRecognitionEventMap["result"]) => {
 
-      console.log(listen.active)
 
-      if(listen.active) {
-        for (let i = 0; i < ev.results.length; i++) {
+    document.body.classList.add("sound-loaded")
 
-          const result = ev.results[i][0]
+    // activeRecognition(recognition, listen, positiveAndNegativeWordsList, pizzicatoManager, debugInterface) // click debug
+    activeRecognition(recognition, useRecognition, positiveAndNegativeWordsList, pizzicatoManager, debugInterface)
 
-          const confidence = result.confidence
-          const transcript = result.transcript.toLowerCase()
-
-          console.log(ev)
-          console.log(result)
-
-          console.log("passé: \t", transcript)
-
-          const score = analyse(positiveAndNegativeWordsList, transcript)
-
-          console.log(score.scoreOfEntierDiscution)
-
-          // runAudio(score.scoreOfEntierDiscution, audioData)
-
-          // audioManager.playSound(LEVEL_NAMES.LEVEL_1)
-
-          const levelName = getLevelName(score.scoreOfEntierDiscution)
-
-          console.log(levelName)
-
-          pizzicatoManager.playLevel(levelName, score.scoreOfEntierDiscution)
-
-          debugInterface.setAnalyseResponseView(score)
-        }
-      }
-
-    })
-
-    recognition.addEventListener("end", () => {
-      startRecognition(recognition)
+    document.querySelector(".r-button-ready")!.addEventListener("click", () => {
+      console.log("clicked!!!")
+      useRecognition.active = true
     })
 
     let scoreSimulation = 0
@@ -84,5 +58,50 @@ export function runRecognitionApp(audioData: IAudioData, listen: ListenStatus) {
     //   pizzicatoManager.playLevel(getLevelName(scoreSimulation), scoreSimulation)
     // })
 
+  })
+}
+
+
+function activeRecognition(recognition: SpeechRecognition, listen: ListenStatus, positiveAndNegativeWordsList: {[key: string]: number}, pizzicatoManager: PizzicatoManager, debugInterface: DebugInterface) {
+
+  recognition.addEventListener("result", (ev: SpeechRecognitionEventMap["result"]) => {
+
+    console.log(listen.active)
+
+    if(listen.active) {
+      for (let i = 0; i < ev.results.length; i++) {
+
+        const result = ev.results[i][0]
+
+        const confidence = result.confidence
+        const transcript = result.transcript.toLowerCase()
+
+        console.log(ev)
+        console.log(result)
+
+        console.log("passé: \t", transcript)
+
+        const score = analyse(positiveAndNegativeWordsList, transcript)
+
+        console.log(score.scoreOfEntierDiscution)
+
+        // runAudio(score.scoreOfEntierDiscution, audioData)
+
+        // audioManager.playSound(LEVEL_NAMES.LEVEL_1)
+
+        const levelName = getLevelName(score.scoreOfEntierDiscution)
+
+        console.log(levelName)
+
+        pizzicatoManager.playLevel(levelName, score.scoreOfEntierDiscution)
+
+        debugInterface.setAnalyseResponseView(score)
+      }
+    }
+
+  })
+
+  recognition.addEventListener("end", () => {
+    startRecognition(recognition)
   })
 }

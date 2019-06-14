@@ -2,127 +2,467 @@ import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
 
 
-export function createObjectScene() {
+interface _addMeshObjectLoadedToParentObjectParameters {
+  parentObject: BABYLON.Mesh
+  abstractMeshes: BABYLON.AbstractMesh[]
+  material: BABYLON.StandardMaterial
+}
 
-  const NUMBER_OF_ELEMENTS_TO_LOAD = 2
-  let elementLoadedCounter = 0
+interface IListOfObjectLoadedMeshes {
+  caskWireframe: BABYLON.AbstractMesh[]
+  cask: BABYLON.AbstractMesh[]
+  headWireframe: BABYLON.AbstractMesh[]
+  head: BABYLON.AbstractMesh[]
+  [key: string]: BABYLON.AbstractMesh[]
+}
 
-  const pinkColor = new BABYLON.Color3(1, 0.81568627451, 0.8)
+type ListOfObjectLoadedMeshesMaps = keyof IListOfObjectLoadedMeshes
 
-  const canvas = document.getElementById("renderCanvas") as HTMLCanvasElement
-  // canvas.style.position = "fixed"
-  // canvas.style.zIndex = "1000000"
+export class ObjectScene {
 
-  const engine = new BABYLON.Engine(canvas)
+  private readonly ROOT_URL = "http://localhost:3000/static/"
 
-  const scene = new BABYLON.Scene(engine);
+  private readonly NUMBER_OF_ELEMENTS_TO_LOAD = 2
+  private elementLoadedCounter = 0
 
-  scene.shadowsEnabled = false
+  private readonly pinkColor        = new BABYLON.Color3(1, 0.81568627451, 0.8)
+  private readonly extraWhiteColor  = new BABYLON.Color3(1, 1, 1)
 
-  scene.clearColor = new BABYLON.Color4(1, 0, 0, 0);
+  private readonly canvas = document.getElementById("renderCanvas") as HTMLCanvasElement
 
-  // This creates and positions a free camera (non-mesh)
-  const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+  // scene
+  private readonly engine:  BABYLON.Engine
+  private readonly scene:   BABYLON.Scene
+  private readonly camera:  BABYLON.FreeCamera
 
-// This targets the camera to scene origin
-  camera.setTarget(new BABYLON.Vector3(0, 5, 0));
-  camera.position = new BABYLON.Vector3(0, 0, -50)
+  // materials
+  private readonly materialWireframe: BABYLON.StandardMaterial
+  private readonly materialPink:      BABYLON.StandardMaterial
+  private readonly materialWireframeHead:  BABYLON.StandardMaterial
 
-  // camera.position.z = -100
-  // camera.position.y = 50
+  // objects
+  private readonly objectParentsContainer:  BABYLON.Mesh
+  private readonly objectParentCasque:      BABYLON.Mesh
+  private readonly objectParentHead:        BABYLON.Mesh
 
-// This attaches the camera to the canvas
-  camera.attachControl(canvas, true);
+  private readonly leftParentContainerPosition_x = -40
+  private readonly leftParentContainerPosition_y = 0
+  private readonly leftParentContainerPosition_z = 40
 
-// This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-//   const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-//
-// // Default intensity is 1. Let's dim the light a small amount
-//   light.intensity = 0.7;
-
-// Create material
-  const materialWireframe = new BABYLON.StandardMaterial("mat0", scene);
-  materialWireframe.diffuseColor = new BABYLON.Color3(1, 1, 1);
-  materialWireframe.wireframe = true
-
-  materialWireframe.diffuseColor    = new BABYLON.Color3(1, 1, 1)
-  materialWireframe.specularColor   = new BABYLON.Color3(1, 1, 1)
-  materialWireframe.emissiveColor   = new BABYLON.Color3(1, 1, 1)
-  materialWireframe.ambientColor    = new BABYLON.Color3(1, 1, 1)
-
-  const pinkMaterial = new BABYLON.StandardMaterial("mat1", scene)
-  pinkMaterial.diffuseColor = pinkColor
-  pinkMaterial.useReflectionFresnelFromSpecular = false
-  pinkMaterial.reflectionTexture = null
-  pinkMaterial.useReflectionOverAlpha = false
-  pinkMaterial.ambientTexture = null
-
-  pinkMaterial.diffuseColor   = pinkColor
-  pinkMaterial.specularColor  = pinkColor
-  pinkMaterial.emissiveColor  = pinkColor
-  pinkMaterial.ambientColor   = pinkColor
-
-  engine.loadingScreen = {
-    displayLoadingUI: () => {},
-    hideLoadingUI: () => {},
-    loadingUIBackgroundColor: "",
-    loadingUIText: "",
+  private _listOfObjectLoadedMeshes: IListOfObjectLoadedMeshes = {
+    caskWireframe:[],
+    cask:[],
+    headWireframe:[],
+    head:[],
   }
 
-  const objectParentCasque = BABYLON.Mesh.CreateBox("objectRay", 1, scene)
+  constructor() {
+    // this.canvas.style.position = "fixed"
+    // this.canvas.style.zIndex = "1000000"
 
-  objectParentCasque.isVisible = false
+    // scene
+    this.engine = new BABYLON.Engine(this.canvas)
+    this.scene  = new BABYLON.Scene(this.engine)
+    this.camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), this.scene) // This creates and positions a free camera (non-mesh)
 
-  objectParentCasque.rotation.x = 0
-  objectParentCasque.rotation.y = 0
-  objectParentCasque.rotation.z = 0
+    // materials
+    this.materialWireframeHead  = new BABYLON.StandardMaterial("mat0", this.scene)
+    this.materialWireframe      = new BABYLON.StandardMaterial("mat0", this.scene)
+    this.materialPink           = new BABYLON.StandardMaterial("mat1", this.scene)
 
-  objectParentCasque.scaling = new BABYLON.Vector3(0.2, 0.2, 0.2)
+    // objects
+    this.objectParentsContainer = BABYLON.Mesh.CreateBox("objectParentCasque",  1, this.scene)
+    this.objectParentCasque     = BABYLON.Mesh.CreateBox("objectParentCasque",  1, this.scene)
+    this.objectParentHead       = BABYLON.Mesh.CreateBox("objectParentHead",    1, this.scene)
 
-  objectParentCasque.position = new BABYLON.Vector3(0, 0, 0)
+    this._setSceneParameters()
+    this._setCameraParameters()
+    this._setMaterialsParameters()
+    this._setEngineParameters()
+    this._setObjectParentParameters({
+      initialScaling:   new BABYLON.Vector3(0.2, 0.2, 0.2),
+      initialPosition:  new BABYLON.Vector3(
+        0,
+        this.leftParentContainerPosition_y,
+        this.leftParentContainerPosition_z),
+    })
 
-  BABYLON.SceneLoader.LoadAssetContainer("http://localhost:3000/static/", "elements3DResizing--casque.obj", scene, value => {
+    this._loadAndAddAllObjectsToScene().then(() => {
 
-    elementLoadedCounter++
+      this._setObjectLoadedMeshesVisibility("headWireframe",  false)
+      this._setObjectLoadedMeshesVisibility("head",           false)
 
-    scene.addMesh(value.meshes[0])
-    scene.addMesh(value.meshes[1])
+      this.canvas.style.opacity = "1"
 
-    value.meshes[0].parent = objectParentCasque
-    value.meshes[1].parent = objectParentCasque
+      this._runAnimationRotation    ({animationDuration: 30 * 60 * 10})
 
-    value.meshes[0].material = materialWireframe
-    value.meshes[1].material = materialWireframe
+      // this.startHeaderEntryAnimation()
 
-    objectParentCasque.position.x = 0
-    objectParentCasque.position.y = 0
-    objectParentCasque.position.z = 40
+      this.engine.runRenderLoop(() => {
+        this.scene.render();
+      })
+    })
 
-    if(elementLoadedCounter === NUMBER_OF_ELEMENTS_TO_LOAD) canvas.style.opacity = "1"
-  });
+  }
 
-  BABYLON.SceneLoader.LoadAssetContainer("http://localhost:3000/static/", "elements3DResizing--casque.obj", scene, value => {
+  startMoveToLeftAnimation() {
+    this._runAnimationGlobalPosition_toLeft({animationDuration: 30 * 60 * 0.04})
+  }
 
-    elementLoadedCounter++
+  startHeaderEntryAnimation() {
+    this._setObjectLoadedMeshesVisibility("headWireframe",  true)
+    this._setObjectLoadedMeshesVisibility("head",           true)
 
-    scene.addMesh(value.meshes[0])
-    scene.addMesh(value.meshes[1])
+    this._runAnimationGlobalPosition_toCenter({animationDuration: 30 * 60 * 0.04})
 
-    value.meshes[0].parent = objectParentCasque
-    value.meshes[1].parent = objectParentCasque
+    this._runAnimationHeadPosition(           {animationDuration: 30 * 60 * 0.4})
+    this._runAnimationHeadOpacity (           {animationDuration: 30 * 60 * 0.1})
+  }
 
-    value.meshes[0].material = pinkMaterial
-    value.meshes[1].material = pinkMaterial
+  private _runAnimationRotation     ({animationDuration}: { animationDuration: number }) {
 
-    if(elementLoadedCounter === NUMBER_OF_ELEMENTS_TO_LOAD) canvas.style.opacity = "1"
-  })
+    const animation = new BABYLON.Animation("rotation", "rotation.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT)
 
-  // Render every frame
-  engine.runRenderLoop(() => {
+    // An array with all animation keys
+    const keys: BABYLON.IAnimationKey[] = [];
 
-    objectParentCasque.rotation.y += .01
+    //At the animation key 0, the value of scaling is "1"
+    keys.push({
+      frame: 0,
+      value: 0,
+    });
 
-    scene.render();
-  });
+    //At the animation key 100, the value of scaling is "1"
+    keys.push({
+      frame: animationDuration,
+      value: 360,
+    });
+
+    animation.setKeys(keys)
+
+    this.objectParentsContainer.animations = []
+    this.objectParentsContainer.animations.push(animation)
+
+    animation.addEvent(new BABYLON.AnimationEvent(60, () => {
+      console.log("%cfirstAnimation ended", "background: black, color: white")
+    }, true))
+
+    this.scene.beginAnimation(this.objectParentsContainer, 0, animationDuration, true)
+  }
+
+  private _runAnimationGlobalPosition_toLeft({animationDuration}: { animationDuration: number }) {
+    const animation = new BABYLON.Animation("headPostionToCenter", "position", 30, BABYLON.Animation.ANIMATIONTYPE_VECTOR3)
+
+    // Creating an easing function
+    var easingFunction = new BABYLON.QuarticEase();
+
+    // For each easing function, you can choose between EASEIN (default), EASEOUT, EASEINOUT
+    easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+
+    // Adding the easing function to the animation
+    animation.setEasingFunction(easingFunction);
+
+    // An array with all animation keys
+    const keys: BABYLON.IAnimationKey[] = []
+
+    //At the animation key 0, the value of scaling is "1"
+    keys.push({
+      frame: 0,
+      value: new BABYLON.Vector3(
+        0,
+        this.leftParentContainerPosition_y,
+        this.leftParentContainerPosition_z
+      )
+    });
+
+    //At the animation key 100, the value of scaling is "1"
+    keys.push({
+      frame: animationDuration,
+      value: new BABYLON.Vector3(
+        this.leftParentContainerPosition_x,
+        this.leftParentContainerPosition_y,
+        this.leftParentContainerPosition_z
+      )
+    });
+
+    animation.setKeys(keys)
+
+    this.objectParentsContainer.animations = []
+    this.objectParentsContainer.animations.push(animation)
+
+    this.scene.beginAnimation(this.objectParentsContainer, 0, animationDuration, false, undefined, undefined, undefined, false)
+  }
+
+  private _runAnimationHeadPosition ({animationDuration}: { animationDuration: number }) {
+
+    const animation = new BABYLON.Animation("head", "position", 30, BABYLON.Animation.ANIMATIONTYPE_VECTOR3)
+
+    // Creating an easing function
+    var easingFunction = new BABYLON.CircleEase();
+
+    // For each easing function, you can choose between EASEIN (default), EASEOUT, EASEINOUT
+    easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+
+    // Adding the easing function to the animation
+    animation.setEasingFunction(easingFunction);
+
+    // An array with all animation keys
+    const keys: BABYLON.IAnimationKey[] = [];
+
+    //At the animation key 0, the value of scaling is "1"
+    keys.push({
+      frame: 0,
+      value: new BABYLON.Vector3(0, -100, 200),
+    });
+
+    keys.push({
+      frame: animationDuration / 4,
+      value: new BABYLON.Vector3(0, 0, 0),
+    });
+
+    //At the animation key 100, the value of scaling is "1"
+    keys.push({
+      frame: animationDuration,
+      value: new BABYLON.Vector3(0, 0, 0),
+    });
+
+    animation.setKeys(keys)
+
+    animation.addEvent(new BABYLON.AnimationEvent(60, () => {
+      console.log("%chead ended", "background: black, color: white")
+    }, true))
+
+    this.objectParentHead.animations = []
+    this.objectParentHead.animations.push(animation)
+
+    this.scene.beginAnimation(this.objectParentHead, 0, animationDuration, true)
+  }
+
+  private _runAnimationHeadOpacity  ({animationDuration}: { animationDuration: number }) {
+
+    const animation = new BABYLON.Animation("head", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT)
+
+    // An array with all animation keys
+    const keys: BABYLON.IAnimationKey[] = [];
+
+    //At the animation key 0, the value of scaling is "1"
+    keys.push({
+      frame: 0,
+      value: 0,
+    });
+
+    keys.push({
+      frame: animationDuration / 3,
+      value: 0,
+    });
+
+    keys.push({
+      frame: animationDuration / 5 * 4,
+      value: 1,
+    });
+
+    //At the animation key 100, the value of scaling is "1"
+    keys.push({
+      frame: animationDuration,
+      value: 0,
+    });
+
+    animation.setKeys(keys)
+
+    this.materialWireframeHead.animations = []
+    this.materialWireframeHead.animations.push(animation)
+
+    this.scene.beginAnimation(this.materialWireframeHead, 0, animationDuration, true)
+  }
+
+  private _runAnimationGlobalPosition_toCenter({animationDuration}: { animationDuration: number }) {
+    const animation = new BABYLON.Animation("headPostionToCenter", "position", 30, BABYLON.Animation.ANIMATIONTYPE_VECTOR3)
+
+    // Creating an easing function
+    var easingFunction = new BABYLON.CubicEase();
+
+    // For each easing function, you can choose between EASEIN (default), EASEOUT, EASEINOUT
+    easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+
+    // Adding the easing function to the animation
+    animation.setEasingFunction(easingFunction);
+
+    // An array with all animation keys
+    const keys: BABYLON.IAnimationKey[] = []
+
+    //At the animation key 0, the value of scaling is "1"
+    keys.push({
+      frame: 0,
+      value: new BABYLON.Vector3(
+        this.leftParentContainerPosition_x,
+        this.leftParentContainerPosition_y,
+        this.leftParentContainerPosition_z
+      )
+    });
+
+    //At the animation key 100, the value of scaling is "1"
+    keys.push({
+      frame: animationDuration,
+      value: new BABYLON.Vector3(
+        0,
+        7,
+        this.leftParentContainerPosition_z
+      )
+    });
+
+    animation.setKeys(keys)
+
+    this.objectParentsContainer.animations = []
+    this.objectParentsContainer.animations.push(animation)
+
+    this.scene.beginAnimation(this.objectParentsContainer, 0, animationDuration, false, undefined, undefined, undefined, false)
+  }
+
+  private _setObjectLoadedMeshesVisibility(objectLoadedMeshesKey: ListOfObjectLoadedMeshesMaps, visible: boolean) {
+    this._listOfObjectLoadedMeshes[objectLoadedMeshesKey].forEach(value => {
+      value.isVisible = visible
+    })
+  }
+
+  private _setSceneParameters() {
+    this.scene.shadowsEnabled = false
+    this.scene.clearColor     = new BABYLON.Color4(1, 0, 0, 0);
+  }
+
+  private _setCameraParameters() {
+    // This targets the camera to scene origin
+    this.camera.setTarget(new BABYLON.Vector3(0, 5, 0));
+    this.camera.position = new BABYLON.Vector3(0, 0, -50)
+
+    // camera.position.z = -100
+    // camera.position.y = 50
+
+    // This attaches the camera to the canvas
+    this.camera.attachControl(this.canvas, true);
+  }
+
+  private _setMaterialsParameters() {
+    // white line material
+    this.materialWireframe.diffuseColor   = this.extraWhiteColor
+    this.materialWireframe.diffuseColor   = this.extraWhiteColor
+    this.materialWireframe.specularColor  = this.extraWhiteColor
+    this.materialWireframe.emissiveColor  = this.extraWhiteColor
+    this.materialWireframe.ambientColor   = this.extraWhiteColor
+
+    this.materialWireframe.wireframe      = true
+
+    // same color of background
+    this.materialPink.diffuseColor        = this.pinkColor
+    this.materialPink.diffuseColor        = this.pinkColor
+    this.materialPink.specularColor       = this.pinkColor
+    this.materialPink.emissiveColor       = this.pinkColor
+    this.materialPink.ambientColor        = this.pinkColor
+
+    this.materialPink.useReflectionFresnelFromSpecular  = false
+    this.materialPink.reflectionTexture                 = null
+    this.materialPink.useReflectionOverAlpha            = false
+    this.materialPink.ambientTexture                    = null
+
+    // head line material
+    this.materialWireframeHead.diffuseColor   = this.extraWhiteColor
+    this.materialWireframeHead.diffuseColor   = this.extraWhiteColor
+    this.materialWireframeHead.specularColor  = this.extraWhiteColor
+    this.materialWireframeHead.emissiveColor  = this.extraWhiteColor
+    this.materialWireframeHead.ambientColor   = this.extraWhiteColor
+
+    this.materialWireframeHead.wireframe      = true
+  }
+
+  private _setEngineParameters() {
+    this.engine.loadingScreen = {
+      displayLoadingUI: () => {},
+      hideLoadingUI: () => {},
+      loadingUIBackgroundColor: "",
+      loadingUIText: "",
+    }
+  }
+
+  private _setObjectParentParameters({initialScaling, initialPosition}: { initialScaling: BABYLON.Vector3, initialPosition: BABYLON.Vector3 }) {
+
+    this.objectParentsContainer.isVisible   = false
+    this.objectParentCasque.isVisible       = false
+    this.objectParentHead.isVisible         = false
+
+    this.objectParentsContainer.scaling     = initialScaling
+    this.objectParentsContainer.position    = initialPosition
+
+    this.objectParentCasque.parent          = this.objectParentsContainer
+    this.objectParentHead.parent            = this.objectParentsContainer
+  }
+
+  private _objectLoader(fileName: string, objectName?: string): Promise<BABYLON.AbstractMesh[]> {
+    return new Promise(resolve => {
+
+      BABYLON.SceneLoader.LoadAssetContainer(this.ROOT_URL, fileName, this.scene, value => {
+        resolve(value.meshes)
+      })
+
+    })
+  }
+
+  private async _multiObjectLoader(listOfObjectFileName: {[name: string]: string}) {
+
+    const arrayOfObjectLoaded: {[key: string]: BABYLON.AbstractMesh[]} = {}
+
+    for (const name in listOfObjectFileName) {
+      const fileName = listOfObjectFileName[name]
+      arrayOfObjectLoaded[name] = await this._objectLoader(fileName)
+    }
+
+    return  arrayOfObjectLoaded as IListOfObjectLoadedMeshes
+  }
+
+  private _addMeshObjectToParentObject({parentObject, abstractMeshes, material}: _addMeshObjectLoadedToParentObjectParameters) {
+
+    for(const mesh of abstractMeshes) {
+
+      this.scene.addMesh(mesh)
+
+      mesh.parent = parentObject
+
+      mesh.material = material
+
+    }
+
+  }
+
+  private async _loadAndAddAllObjectsToScene() {
+
+    this._listOfObjectLoadedMeshes = await this._multiObjectLoader({
+      caskWireframe:  "elements3DResizing--casque.obj",
+      cask:           "elements3DResizing--casque.obj",
+      headWireframe:  "elements3DResizing--tete.obj",
+      head:           "elements3DResizing--tete.obj",
+    })
+
+    this._addMeshObjectToParentObject({
+      abstractMeshes: this._listOfObjectLoadedMeshes.caskWireframe,
+      material:       this.materialWireframe,
+      parentObject:   this.objectParentCasque,
+    })
+
+    this._addMeshObjectToParentObject({
+      abstractMeshes: this._listOfObjectLoadedMeshes.cask,
+      material:       this.materialPink,
+      parentObject:   this.objectParentCasque,
+    })
+
+    this._addMeshObjectToParentObject({
+      abstractMeshes: this._listOfObjectLoadedMeshes.headWireframe,
+      material:       this.materialWireframeHead,
+      parentObject:   this.objectParentHead,
+    })
+
+    this._addMeshObjectToParentObject({
+      abstractMeshes: this._listOfObjectLoadedMeshes.head,
+      material:       this.materialPink,
+      parentObject:   this.objectParentHead,
+    })
+  }
 
 }
