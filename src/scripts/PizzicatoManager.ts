@@ -125,7 +125,8 @@ export class PizzicatoManager {
 
   }
 
-  private _lastLevelOneSongPlayed?: Sound
+  private _lastLevelOneSongPlayed?:   Sound
+  private _lastLevelTwoSoundPlayed?:  Sound
 
   playLevel(level: LEVEL_NAMES, scoreOfEntierDiscution: number) {
 
@@ -135,56 +136,106 @@ export class PizzicatoManager {
 
       let mainSoundVolume = .75
 
-      // switch (level) {
-      //   case LEVEL_NAMES.LEVEL_1:
-      //     this._lastLevelOneSongPlayed = mainSound
-      //     break
-      //
-      //   case LEVEL_NAMES.LEVEL_2:
-      //
-      //     if(! this._lastLevelOneSongPlayed) this._lastLevelOneSongPlayed =  this.getRandomSoundInLevel(LEVEL_NAMES.LEVEL_1).randomSoundInLevel
-      //
-      //     PizzicatoManager._removeEffectOfSound(this._lastLevelOneSongPlayed)
-      //
-      //     this._lastLevelOneSongPlayed.addEffect(this.effects.pingPongDelay)
-      //
-      //     this._lastLevelOneSongPlayed.volume = this.scale_to_0_1(scoreOfEntierDiscution, -1, -2, 0.15, .75)
-      //
-      //     mainSoundVolume = this.scale_to_0_1(scoreOfEntierDiscution, -1, -2, .3, 1)
-      //
-      //
-      //     console.log(this._lastLevelOneSongPlayed.effects)
-      //     this._lastLevelOneSongPlayed.play()
-      //
-      //     break
-      //
-      //   case LEVEL_NAMES.LEVEL_3:
-      //
-      //     if(! this._lastLevelOneSongPlayed) this._lastLevelOneSongPlayed =  this.getRandomSoundInLevel(LEVEL_NAMES.LEVEL_1).randomSoundInLevel
-      //
-      //     PizzicatoManager._removeEffectOfSound(this._lastLevelOneSongPlayed)
-      //
-      //     // debugger
-      //
-      //     this._lastLevelOneSongPlayed.addEffect(this.effects.pingPongDelayIntensity_2)
-      //     // this._lastLevelOneSongPlayed.addEffect(this.effects.lowPassFilter)
-      //
-      //     console.log(JSON.stringify(this._lastLevelOneSongPlayed!.effects))
-      //
-      //     this._lastLevelOneSongPlayed.volume = 1
-      //     console.log(this._lastLevelOneSongPlayed.effects)
-      //     this._lastLevelOneSongPlayed.play()
-      //
-      //     break
-      //   case LEVEL_NAMES.LEVEL_4:
-      //
-      //     break
-      //   case LEVEL_NAMES.LEVEL_5:
-      // }
+      switch (level) {
+        case LEVEL_NAMES.LEVEL_1:
+          this._lastLevelOneSongPlayed = mainSound
+          break
+
+        case LEVEL_NAMES.LEVEL_2:
+
+          if(! this._lastLevelOneSongPlayed) this._lastLevelOneSongPlayed =  this.getRandomSoundInLevel(LEVEL_NAMES.LEVEL_1).randomSoundInLevel
+
+          PizzicatoManager._removeEffectOfSound(this._lastLevelOneSongPlayed)
+
+          this._lastLevelOneSongPlayed.addEffect(this.effects.pingPongDelay)
+
+          this._lastLevelOneSongPlayed.volume = this.scale_to_0_1(scoreOfEntierDiscution, -1, -2, 0.15, .75)
+
+          mainSoundVolume = this.scale_to_0_1(scoreOfEntierDiscution, -1, -2, .3, 1)
+
+          this._lastLevelTwoSoundPlayed = mainSound
+
+          console.log(this._lastLevelOneSongPlayed.effects)
+          // this._lastLevelOneSongPlayed.play()  // todo: here
+
+          break
+
+        // case LEVEL_NAMES.LEVEL_3:
+        //
+        //   if(! this._lastLevelOneSongPlayed) this._lastLevelOneSongPlayed =  this.getRandomSoundInLevel(LEVEL_NAMES.LEVEL_1).randomSoundInLevel
+        //
+        //   PizzicatoManager._removeEffectOfSound(this._lastLevelOneSongPlayed)
+        //
+        //   // debugger
+        //
+        //   this._lastLevelOneSongPlayed.addEffect(this.effects.pingPongDelayIntensity_2)
+        //   // this._lastLevelOneSongPlayed.addEffect(this.effects.lowPassFilter)
+        //
+        //   console.log(JSON.stringify(this._lastLevelOneSongPlayed!.effects))
+        //
+        //   this._lastLevelOneSongPlayed.volume = 1
+        //   console.log(this._lastLevelOneSongPlayed.effects)
+        //   this._lastLevelOneSongPlayed.play()
+        //
+        //   break
+        // case LEVEL_NAMES.LEVEL_4:
+        //
+        //   break
+        // case LEVEL_NAMES.LEVEL_5:
+      }
 
       PizzicatoManager._removeEffectOfSound(mainSound)
       mainSound.volume = mainSoundVolume
-      mainSound.play()
+
+
+      switch (level) {
+        case LEVEL_NAMES.LEVEL_1:
+          if(this._lastLevelOneSongPlayed && this._lastLevelTwoSoundPlayed) {
+
+            if(! this._lastLevelOneSongPlayed.playing && ! this._lastLevelTwoSoundPlayed.playing) {
+              mainSound.play()
+            } else {
+              console.info("%ca sound already played", "background: pink")
+            }
+
+          } else if (this._lastLevelOneSongPlayed) {
+
+            if(! this._lastLevelOneSongPlayed.playing) {
+              mainSound.play()
+            } else {
+              console.info("%ca sound already played", "background: pink")
+            }
+
+          } else {
+            mainSound.play()
+          }
+
+          break
+
+        case LEVEL_NAMES.LEVEL_2:
+          if(this._lastLevelTwoSoundPlayed) {
+
+            if(! this._lastLevelTwoSoundPlayed.playing) {
+              if(this._lastLevelOneSongPlayed) {
+                this._lastLevelOneSongPlayed.play()
+              }
+              mainSound.play()
+            } else {
+              console.info("%ca sound already played", "background: pink")
+            }
+
+          } else {
+            if(this._lastLevelOneSongPlayed) {
+              this._lastLevelOneSongPlayed.play()
+            }
+            mainSound.play()
+          }
+          break
+
+        default:
+          mainSound.play()
+      }
+
 
       console.log("=====")
       console.log(this._lastLevelOneSongPlayed ? this._lastLevelOneSongPlayed.volume : null)

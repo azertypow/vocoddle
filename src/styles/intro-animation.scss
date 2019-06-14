@@ -100,3 +100,12 @@ $page-transition-delay: 500ms;
     //opacity: 0.7 !important;
   }
 }
+
+.recognition-active {
+  .r-pages {
+    opacity: 0 !important;
+  }
+
+  color: $underlin-color;
+  background: black;
+}

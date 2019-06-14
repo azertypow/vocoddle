@@ -40,6 +40,8 @@ declare module "Pizzicato" {
      * */
     frequency: number
 
+    playing: boolean
+
     on(event: 'play' | 'pause' | 'stop' | 'end', f: () => void): void
 
     effects: any[]

@@ -41,6 +41,9 @@ export function runRecognitionApp(audioData: IAudioData, listen: ListenStatus) {
 
     document.querySelector(".r-button-ready")!.addEventListener("click", () => {
       console.log("clicked!!!")
+
+      document.body.classList.add("recognition-active")
+
       useRecognition.active = true
     })
 
