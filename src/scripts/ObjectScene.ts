@@ -92,6 +92,10 @@ export class ObjectScene {
       this._setObjectLoadedMeshesVisibility("headWireframe",  false)
       this._setObjectLoadedMeshesVisibility("head",           false)
 
+      this._listOfObjectLoadedMeshes.cask.forEach(value => {
+        value.scaling = new BABYLON.Vector3(0.9999999, 0.9999999, 0.9999999)
+      })
+
       this.canvas.style.opacity = "1"
 
       this._runAnimationRotation    ({animationDuration: 30 * 60 * 10})
@@ -326,7 +330,9 @@ export class ObjectScene {
 
   private _setSceneParameters() {
     this.scene.shadowsEnabled = false
-    this.scene.clearColor     = new BABYLON.Color4(1, 0, 0, 0);
+    this.scene.clearColor     = new BABYLON.Color4(1, 0, 0, 0)
+
+    this.engine.setSize(this.canvas.width * 2, this.canvas.height * 2)
   }
 
   private _setCameraParameters() {
