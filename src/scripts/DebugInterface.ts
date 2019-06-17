@@ -4,6 +4,7 @@ export class DebugInterface {
   private _elementDebueger = document.createElement("div")
 
   private _score                                           = this.createDivElement()
+  private _scoreOnLastElements                             = this.createDivElement()
   private _level                                           = this.createDivElement()
   private _scoreOfEntierDiscution_testDivisionFix          = this.createDivElement()
   private _moyenne_avec_l_ensemble_des_mots                = this.createDivElement()
@@ -21,6 +22,7 @@ export class DebugInterface {
 
   setAnalyseResponseView(analyseResponse: IAnalyseResponse) {
     this._score.innerText =                                         `score :                                          ${analyseResponse.scoreOfEntierDiscution}`
+    this._scoreOnLastElements.innerText =                           `scoreOnLastElements :                            ${analyseResponse.scoreOnLastElements}`
     this._level.innerText =                                         `score :                                          ${getLevelName(analyseResponse.scoreOfEntierDiscution)}`
     this._scoreOfEntierDiscution_testDivisionFix.innerText =        `scoreOfEntierDiscution_testDivisionFix :         ${analyseResponse.info.scoreOfEntierDiscution_testDivisionFix}`
     this._moyenne_avec_l_ensemble_des_mots.innerText =              `moyenne_avec_l_ensemble_des_mots :               ${analyseResponse.info.moyenne_avec_l_ensemble_des_mots}`

@@ -43,8 +43,20 @@ export function analyse(afinn: {[key: string]: number}, textToAnalyse: string): 
   const scoreOfEntierDiscution                  = sumOfAllScoredOfText / (arrayOfAllScoreOfText.length ? arrayOfAllScoreOfText.length : 1)
   const scoreOfEntierDiscution_testDivisionFix  = sumOfAllScoredOfText / 2
 
+
+  const numberOfLastScore = 3
+  const arrayOfLastScoreOfDiscution = arrayOfAllScoreOfText.length < numberOfLastScore ?
+    arrayOfAllScoreOfText.slice(                                                0, arrayOfAllScoreOfText.length) :
+    arrayOfAllScoreOfText.slice( arrayOfAllScoreOfText.length - numberOfLastScore, arrayOfAllScoreOfText.length)
+
+  const sumOfLastScoreOfDiscution =  arrayOfLastScoreOfDiscution.reduce(getSum)
+
+  const scoreOnLastElements = sumOfLastScoreOfDiscution / (arrayOfLastScoreOfDiscution.length ? arrayOfLastScoreOfDiscution.length : 1)
+
+
   return {
     scoreOfEntierDiscution,
+    scoreOnLastElements,
     info: {
       scoreOfEntierDiscution_testDivisionFix,
       score_total_des_mots:                           totalOfWordsScoreInTextToAnalyse,
@@ -59,6 +71,7 @@ export function analyse(afinn: {[key: string]: number}, textToAnalyse: string): 
 
 export interface IAnalyseResponse {
   scoreOfEntierDiscution: number;
+  scoreOnLastElements: number;
   info: {
     scoreOfEntierDiscution_testDivisionFix: number,
     moyenne_avec_seulement_les_mots_qui_on_matche: number;

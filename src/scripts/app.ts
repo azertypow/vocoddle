@@ -45,29 +45,33 @@ export function runRecognitionApp(audioData: IAudioData, listen: ListenStatus, b
 
 
       /**prod*/
-      // babylonScene.startBlackBackgroundAnimation()
-      //
-      // document.body.classList.add("recognition-active")
-      //
-      // useRecognition.active = true
+      babylonScene.startBlackBackgroundAnimation()
+
+      document.body.classList.add("recognition-active")
+
+      useRecognition.active = true
 
 
       /**debugg*/
-      let scoreSimulation = 0
+      // let scoreSimulation = 0
+      //
+      // document.addEventListener("click", (ev) => {
+      //
+      //   document.body.classList.add("recognition-active")
+      //
+      //   const incrementation = ev.altKey ? .2 : .5
+      //
+      //   if(ev.shiftKey) scoreSimulation += incrementation
+      //   else scoreSimulation -= incrementation
+      //
+      //   console.log(scoreSimulation)
+      //
+      //   pizzicatoManager.playLevel(getLevelName(scoreSimulation), scoreSimulation)
+      // })
 
-      document.addEventListener("click", (ev) => {
 
-        document.body.classList.add("recognition-active")
 
-        const incrementation = ev.altKey ? .2 : .5
 
-        if(ev.shiftKey) scoreSimulation += incrementation
-        else scoreSimulation -= incrementation
-
-        console.log(scoreSimulation)
-
-        pizzicatoManager.playLevel(getLevelName(scoreSimulation), scoreSimulation)
-      })
     })
 
   })
@@ -96,12 +100,13 @@ function activeRecognition(recognition: SpeechRecognition, listen: ListenStatus,
         const score = analyse(positiveAndNegativeWordsList, transcript)
 
         console.log(score.scoreOfEntierDiscution)
+        console.log(score.scoreOnLastElements)
 
         // runAudio(score.scoreOfEntierDiscution, audioData)
 
         // audioManager.playSound(LEVEL_NAMES.LEVEL_1)
 
-        const levelName = getLevelName(score.scoreOfEntierDiscution)
+        const levelName = getLevelName(score.scoreOnLastElements)
 
         console.log(levelName)
 
