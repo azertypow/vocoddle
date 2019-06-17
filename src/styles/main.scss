@@ -1,14 +1,15 @@
 @import "font-loader";
 
-$color-main:      hsl(5, 100%, 90%);
-$color-secondary: hsl(228, 89%, 42%);
+$color-main:      hsla(344, 95%, 79%, 1);
+$color-secondary: hsla(223, 68%, 40%, 1);
+$color-secondary-txt: hsla(223, 76%, 39%, 1);
 
-$underlin-color: darken($color-main, 20);
+$underlin-color: darken($color-main, 10);
 
 body {
   -webkit-font-smoothing: antialiased;
   font-family: euclid, ".SF NS Display", sans-serif;
-  color: $color-secondary;
+  color: $color-secondary-txt;
   background-color: $color-main;
   margin: 0;
   position: relative;
@@ -141,7 +142,7 @@ h4 {
   background-size: 10px 1em;
   display: inline;
   padding-bottom: 0.2em;
-  box-shadow: inset 0px -0.25em 0 -2px #ff7366;
+  box-shadow: inset 0px -0.25em 0 -2px $underlin-color;
 }
 
 .right-content {
@@ -247,7 +248,7 @@ h4 {
   }
 
   .sound-loaded & {
-    color: $color-secondary;
+    color: $color-secondary-txt;
 
     &.with-arrow {
       &:after {
@@ -310,7 +311,7 @@ h4 {
   font-weight: 600;
   -webkit-font-smoothing: antialiased;
   letter-spacing: calc(-4em / 100);
-  color: $color-secondary;
+  color: $color-secondary-txt;
 
   .color {
     color: $underlin-color;

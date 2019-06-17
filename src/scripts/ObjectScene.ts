@@ -22,7 +22,7 @@ export class ObjectScene {
 
   private readonly ROOT_URL = "http://localhost:3000/static/"
 
-  private readonly pinkColor        = new BABYLON.Color3(1, 0.81568627451, 0.8)
+  private readonly pinkColor        = new BABYLON.Color3(0.9882352941, 0.5921568627, 0.6980392157)  //rgb(252, 151, 178)
   private readonly extraWhiteColor  = new BABYLON.Color3(1, 1, 1)
 
   private readonly canvas = document.getElementById("renderCanvas") as HTMLCanvasElement
