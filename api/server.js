@@ -53,6 +53,9 @@ async function getFiles(publicDirectory, directory) {
                 // @ts-ignore
                 listOfFilesPath[entry] = await getFiles(publicDirectory, entryPathRelativeToPublicDirectory)
             }
+
+            console.log(entryPath)
+            console.log(entryPath.isWaveFile())
         }
     }
     return listOfFilesPath
@@ -60,5 +63,5 @@ async function getFiles(publicDirectory, directory) {
 
 // @ts-ignore
 String.prototype.isWaveFile = function() {
-    return path.extname(this.toString()) === ".wav" || ".acc"
+    return path.extname(this.toString()) === ".wav" || path.extname(this.toString()) === ".aac" || path.extname(this.toString()) === ".mp3"
 }
