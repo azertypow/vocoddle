@@ -89,7 +89,7 @@ export function getLevelName(score: number): LEVEL_NAMES {
     case ( levelValue["-2"] <= score && score < levelValue["-1"]  ) : return LEVEL_NAMES.LEVEL_2
     case ( levelValue["-3"] <= score && score < levelValue["-2"]  ) : return LEVEL_NAMES.LEVEL_3
     case ( levelValue["-4"] <= score && score < levelValue["-3"]  ) : return LEVEL_NAMES.LEVEL_4
-    case ( levelValue["-5"] <= score && score < levelValue["-4"]  ) : return LEVEL_NAMES.LEVEL_5
+    case ( levelValue["-5"] <= score && score < levelValue["-4"]  ) : return LEVEL_NAMES.LEVEL_4 // todo remode -5 from score files
     default                                                         : return LEVEL_NAMES.LEVEL_0
   }
 }

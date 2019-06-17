@@ -22,9 +22,6 @@ export class ObjectScene {
 
   private readonly ROOT_URL = "http://localhost:3000/static/"
 
-  private readonly NUMBER_OF_ELEMENTS_TO_LOAD = 2
-  private elementLoadedCounter = 0
-
   private readonly pinkColor        = new BABYLON.Color3(1, 0.81568627451, 0.8)
   private readonly extraWhiteColor  = new BABYLON.Color3(1, 1, 1)
 
@@ -34,6 +31,8 @@ export class ObjectScene {
   private readonly engine:  BABYLON.Engine
   private readonly scene:   BABYLON.Scene
   private readonly camera:  BABYLON.FreeCamera
+
+  private readonly backgroundClearColor = new BABYLON.Color4(0, 0, 0, 0)
 
   // materials
   private readonly materialWireframe: BABYLON.StandardMaterial
@@ -121,6 +120,164 @@ export class ObjectScene {
 
     this._runAnimationHeadPosition(           {animationDuration: 30 * 60 * 0.4})
     this._runAnimationHeadOpacity (           {animationDuration: 30 * 60 * 0.1})
+  }
+
+  startBlackBackgroundAnimation() {
+    this._runMaterialPinkToBLack({ animationDuration: 30 / 1000 * 500, animationPropertyName: "ambientColor"})
+    this._runMaterialPinkToBLack({ animationDuration: 30 / 1000 * 500, animationPropertyName: "diffuseColor"})
+    this._runMaterialPinkToBLack({ animationDuration: 30 / 1000 * 500, animationPropertyName: "emissiveColor"})
+    this._runMaterialPinkToBLack({ animationDuration: 30 / 1000 * 500, animationPropertyName: "specularColor"})
+
+    this._runRotateToFace({animationDuration: 30 * 10})
+
+    this.scene.stopAnimation(this.objectParentHead)
+    this._runAnimationRestoreHeadPosition({animationDuration: 30 * 5})
+
+    this._runAnimationHeadOpacityEnded({animationDuration: 30 * 60 * 0.4})
+  }
+
+  private _runAnimationRestoreHeadPosition ({animationDuration}: { animationDuration: number }) {
+
+    const animation = new BABYLON.Animation("head", "position", 30, BABYLON.Animation.ANIMATIONTYPE_VECTOR3)
+
+    // An array with all animation keys
+    const keys: BABYLON.IAnimationKey[] = [];
+
+    //At the animation key 0, the value of scaling is "1"
+    keys.push({
+      frame: 0,
+      value: new BABYLON.Vector3(
+        this.objectParentHead.position.x,
+        this.objectParentHead.position.y,
+        this.objectParentHead.position.z
+      ),
+    });
+
+    //At the animation key 100, the value of scaling is "1"
+    keys.push({
+      frame: animationDuration,
+      value: new BABYLON.Vector3(0, 0, 0),
+    });
+
+    animation.setKeys(keys)
+
+    this.objectParentHead.animations = []
+    this.objectParentHead.animations.push(animation)
+
+    this.scene.beginAnimation(this.objectParentHead, 0, animationDuration, false)
+  }
+
+  private _runAnimationHeadOpacityEnded  ({animationDuration}: { animationDuration: number }) {
+
+    const animation = new BABYLON.Animation("head", "alpha", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT)
+
+    // An array with all animation keys
+    const keys: BABYLON.IAnimationKey[] = [];
+
+    //At the animation key 0, the value of scaling is "1"
+    keys.push({
+      frame: 0,
+      value: .15,
+    });
+
+    keys.push({
+      frame: animationDuration / 3,
+      value: .15,
+    });
+
+    keys.push({
+      frame: animationDuration / 5 * 4,
+      value: .60,
+    });
+
+    //At the animation key 100, the value of scaling is "1"
+    keys.push({
+      frame: animationDuration,
+      value: .15,
+    });
+
+    animation.setKeys(keys)
+
+    this.materialWireframeHead.animations = []
+    this.materialWireframeHead.animations.push(animation)
+
+    this.scene.beginAnimation(this.materialWireframeHead, 0, animationDuration, true)
+  }
+
+  private _runRotateToFace({animationDuration}: { animationDuration: number}) {
+
+    const animation = new BABYLON.Animation("rotationToFace", "rotation", 30, BABYLON.Animation.ANIMATIONTYPE_VECTOR3)
+
+    // An array with all animation keys
+    const keys: BABYLON.IAnimationKey[] = []
+
+    const currentRotationYInDegrees = this.objectParentsContainer.rotation.y * 180 / Math.PI
+
+    keys.push({
+      frame: 0,
+      value: new BABYLON.Vector3(
+        0,
+        (currentRotationYInDegrees % 360) * (Math.PI / 180),
+        0
+      )
+      ,
+    });
+
+    keys.push({
+      frame: animationDuration,
+      value: new BABYLON.Vector3(
+        0,
+        currentRotationYInDegrees < 180 ? 0 : 360 * (Math.PI / 180),
+        0
+      )
+      ,
+    });
+
+    animation.setKeys(keys)
+
+    this.objectParentsContainer.animations = []
+    this.objectParentsContainer.animations.push(animation)
+
+    this.scene.beginAnimation(this.objectParentsContainer, 0, animationDuration, false)
+  }
+
+  private _runMaterialPinkToBLack({animationDuration, animationPropertyName}: { animationDuration: number, animationPropertyName: "diffuseColor" | "specularColor" | "emissiveColor" | "ambientColor" }) {
+    const animation = new BABYLON.Animation("pinkMateil" + animationPropertyName, animationPropertyName, 30, BABYLON.Animation.ANIMATIONTYPE_COLOR3)
+
+    // // Creating an easing function
+    // var easingFunction = new BABYLON.CubicEase();
+    //
+    // // For each easing function, you can choose between EASEIN (default), EASEOUT, EASEINOUT
+    // easingFunction.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+    //
+    // // Adding the easing function to the animation
+    // animation.setEasingFunction(easingFunction);
+
+    // An array with all animation keys
+    const keys: BABYLON.IAnimationKey[] = []
+
+    //At the animation key 0, the value of scaling is "1"
+    keys.push({
+      frame: 0,
+      value: this.pinkColor
+    });
+
+    //At the animation key 100, the value of scaling is "1"
+    keys.push({
+      frame: animationDuration,
+      value: new BABYLON.Color3(
+        0,
+        0,
+        0,
+      )
+    });
+
+    animation.setKeys(keys)
+
+    this.materialPink.animations = []
+    this.materialPink.animations.push(animation)
+
+    this.scene.beginAnimation(this.materialPink, 0, animationDuration, false, undefined, undefined, undefined, false)
   }
 
   private _runAnimationRotation     ({animationDuration}: { animationDuration: number }) {
@@ -330,7 +487,7 @@ export class ObjectScene {
 
   private _setSceneParameters() {
     this.scene.shadowsEnabled = false
-    this.scene.clearColor     = new BABYLON.Color4(1, 0, 0, 0)
+    this.scene.clearColor     = new BABYLON.Color4(0, 0, 0, 0)
 
     this.engine.setSize(this.canvas.width * 2, this.canvas.height * 2)
   }

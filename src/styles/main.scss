@@ -68,6 +68,28 @@ h4 {
   display: block;
 }
 
+.r-ended-logo {
+  height: auto;
+  width: auto;
+  display: block;
+  transform: translateY(37vh);
+  opacity: 0.75;
+
+  .r-logo {
+    color: white;
+    display: block;
+    height: 1ex;
+    line-height: 1ex;
+    font-size: 3vh;
+
+    .color {
+      line-height: 1ex;
+      height: 1ex;
+      color: white;
+    }
+  }
+}
+
 .text-bandeau {
   white-space: nowrap;
 
@@ -156,6 +178,10 @@ h4 {
 
 .r-title {
   margin: 0;
+
+  .r-logo {
+    font-size: 7vh;
+  }
 }
 
 .logo-container {

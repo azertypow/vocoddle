@@ -65,7 +65,7 @@ function startApplication() {
 
         babylonScene.startHeaderEntryAnimation()
 
-        if (speachRecognitionIsNotStarting) runRecognitionApp(audioData, listen)
+        if (speachRecognitionIsNotStarting) runRecognitionApp(audioData, listen, babylonScene)
       })
 
     })

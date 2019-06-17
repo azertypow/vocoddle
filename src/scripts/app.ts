@@ -5,13 +5,14 @@ import {IAudioData, LEVEL_NAMES} from "./audioLoader"
 import {ListenStatus} from "./ListenStatus"
 import {DebugInterface} from "./DebugInterface"
 import {PizzicatoManager} from "./PizzicatoManager"
+import {ObjectScene} from "./ObjectScene"
 
 declare class webkitSpeechRecognition extends SpeechRecognition{}
 
 let useRecognition = new ListenStatus(() => {console.log("recognition activeted")})
 useRecognition.active = false
 
-export function runRecognitionApp(audioData: IAudioData, listen: ListenStatus) {
+export function runRecognitionApp(audioData: IAudioData, listen: ListenStatus, babylonScene: ObjectScene) {
 
   let recognition = new webkitSpeechRecognition() as SpeechRecognition;
 
@@ -41,6 +42,8 @@ export function runRecognitionApp(audioData: IAudioData, listen: ListenStatus) {
 
     document.querySelector(".r-button-ready")!.addEventListener("click", () => {
       console.log("clicked!!!")
+
+      babylonScene.startBlackBackgroundAnimation()
 
       document.body.classList.add("recognition-active")
 
