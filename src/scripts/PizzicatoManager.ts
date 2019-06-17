@@ -38,65 +38,6 @@ export class PizzicatoManager {
       numberOfSoundLoaded: 0,
       numberOfSoundToLoad: Object.keys(this.AUDIO_DATA.listOfSoundFilesUrl).length,
     }
-
-    // this.loadAudioFiles().then(() => {
-    //
-    //   const nameOfAudioFile = this.AUDIO_DATA.listOfAudioFilesNameByLevel["Niveau_-1"][0]
-    //   const sound = this._listOfSound[nameOfAudioFile]
-    //
-    //   sound.addEffect(this.effects.pingPongDelay)
-    //   sound.addEffect(this.effects.lowPassFilter)
-    //
-    //   console.log(sound)
-    //
-    //   sound.play()
-    //
-    // })
-
-    /**
-     * level 2 test
-     * */
-    // var sound = new Pizzicato.Sound(AUDIO_DATA.listOfSoundFilesUrl["Niveau_-1_Accident.wav"], function() {
-    //   // acousticGuitar.play();
-    //   var pingPongDelay = new Pizzicato.Effects.PingPongDelay({
-    //     feedback: 0.6,
-    //     time: 0.4,
-    //     mix: 0.5
-    //   });
-    //
-    //   sound.addEffect(pingPongDelay);
-    //   sound.play()
-    // });
-
-    /**
-     * level 3 test
-     * */
-    // var sound = new Pizzicato.Sound(AUDIO_DATA.listOfSoundFilesUrl["Niveau_-1_Accident.wav"], () => {
-    //   sound.play()
-    // });
-
-    // var sound = new Pizzicato.Sound(AUDIO_DATA.listOfSoundFilesUrl["Niveau_-2_dettes.wav"], function () {
-    //   var pingPongDelay = new Pizzicato.Effects.PingPongDelay({
-    //     feedback: 0.6,
-    //     time: 0.4,
-    //     mix: 0.5
-    //   });
-    //
-    //   sound.addEffect(pingPongDelay);
-    //   sound.volume = 0.25
-    //   sound.play()
-    // });
-
-    // var sound2 = new Pizzicato.Sound(AUDIO_DATA.listOfSoundFilesUrl["Niveau_-3_ecrire.wav"], function () {
-    //   // sound2.addEffect(dubDelay);
-    //   // sound2.addEffect(delay);
-    //
-    //   console.log("====")
-    //   console.log(sound2)
-    //   console.log("====")
-    //
-    //   sound2.play()
-    // });
   }
 
   loadAudioFiles() {
@@ -115,7 +56,7 @@ export class PizzicatoManager {
           console.log(this._soundLoadedInfo.numberOfSoundToLoad)
           console.log("=====")
 
-          if(this._soundLoadedInfo.allIsLoaded()) resolve()
+          if(this._soundLoadedInfo.allIsLoaded()) resolve(this._listOfSound)
 
         }) as Sound
 
@@ -125,151 +66,254 @@ export class PizzicatoManager {
 
   }
 
-  private _lastLevelOneSongPlayed?:   Sound
-  private _lastLevelTwoSoundPlayed?:  Sound
+  private _lastSoundLevel_1_withEffect = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_1).randomSoundInLevel_withEffect
+  private _lastSoundLevel_2_withEffect = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_2).randomSoundInLevel_withEffect
+  private _lastSoundLevel_3_withEffect = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_3).randomSoundInLevel_withEffect
+  private _lastSoundLevel_4_withEffect = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_4).randomSoundInLevel_withEffect
+
+  private lastSoundPlaying: {
+    main:           Sound | null,
+    levelEffect_1:  Sound | null,
+    levelEffect_2:  Sound | null,
+    levelEffect_3:  Sound | null,
+    levelEffect_4:  Sound | null,
+  } = {
+    main: null,
+    levelEffect_1: null,
+    levelEffect_2: null,
+    levelEffect_3: null,
+    levelEffect_4: null,
+  }
 
   playLevel(level: LEVEL_NAMES, scoreOfEntierDiscution: number) {
 
     try {
 
-      const mainSound = this.getRandomSoundInLevel(level).randomSoundInLevel
+      const mainSoundData     = this.getRandomSoundDataInLevel(level)
 
-      let mainSoundVolume = .75
+      const mainSoundVolume = .75
 
       switch (level) {
         case LEVEL_NAMES.LEVEL_1:
-          this._lastLevelOneSongPlayed = mainSound
+
+          // save effect
+          this._lastSoundLevel_1_withEffect = mainSoundData.randomSoundInLevel_withEffect
+
+          // set volume
+          mainSoundData.randomSoundInLevel.volume = mainSoundVolume
+
+          // play
+          if( this.lastSoundPlaying.main === null ||
+            ! this.lastSoundPlaying.main.playing) {
+              this.lastSoundPlaying.main =  mainSoundData.randomSoundInLevel
+                                            mainSoundData.randomSoundInLevel.play()
+          }
+
+          // debugger
+
           break
 
         case LEVEL_NAMES.LEVEL_2:
 
-          if(! this._lastLevelOneSongPlayed) this._lastLevelOneSongPlayed =  this.getRandomSoundInLevel(LEVEL_NAMES.LEVEL_1).randomSoundInLevel
+          // save effect
+          this._lastSoundLevel_2_withEffect = mainSoundData.randomSoundInLevel_withEffect
 
-          PizzicatoManager._removeEffectOfSound(this._lastLevelOneSongPlayed)
+          // set volume
+          mainSoundData.randomSoundInLevel.volume = scale_to({
+            num: scoreOfEntierDiscution,
+            in_min: -1,
+            in_max: -2,
+            out_min: .3,
+            out_max: 1
+          })
 
-          this._lastLevelOneSongPlayed.addEffect(this.effects.pingPongDelay)
+          this._lastSoundLevel_1_withEffect.volume = scale_to({
+            num: scoreOfEntierDiscution,
+            in_min:   -1,
+            in_max:   -2,
+            out_min:  0.3,
+            out_max:  1
+          })
 
-          this._lastLevelOneSongPlayed.volume = this.scale_to_0_1(scoreOfEntierDiscution, -1, -2, 0.15, .75)
+          // play
+          if( this.lastSoundPlaying.main === null ||
+            ! this.lastSoundPlaying.main.playing) {
+              this.lastSoundPlaying.main =  mainSoundData.randomSoundInLevel
+                                            mainSoundData.randomSoundInLevel.play()
+          }
 
-          mainSoundVolume = this.scale_to_0_1(scoreOfEntierDiscution, -1, -2, .3, 1)
+          if( this.lastSoundPlaying.levelEffect_1 === null ||
+            ! this.lastSoundPlaying.levelEffect_1.playing) {
+              this.lastSoundPlaying.levelEffect_1 = this._lastSoundLevel_1_withEffect
+                                                    this._lastSoundLevel_1_withEffect.play()
+          }
 
-          this._lastLevelTwoSoundPlayed = mainSound
-
-          console.log(this._lastLevelOneSongPlayed.effects)
-          // this._lastLevelOneSongPlayed.play()  // todo: here
+          // debugger
 
           break
 
-        // case LEVEL_NAMES.LEVEL_3:
-        //
-        //   if(! this._lastLevelOneSongPlayed) this._lastLevelOneSongPlayed =  this.getRandomSoundInLevel(LEVEL_NAMES.LEVEL_1).randomSoundInLevel
-        //
-        //   PizzicatoManager._removeEffectOfSound(this._lastLevelOneSongPlayed)
-        //
-        //   // debugger
-        //
-        //   this._lastLevelOneSongPlayed.addEffect(this.effects.pingPongDelayIntensity_2)
-        //   // this._lastLevelOneSongPlayed.addEffect(this.effects.lowPassFilter)
-        //
-        //   console.log(JSON.stringify(this._lastLevelOneSongPlayed!.effects))
-        //
-        //   this._lastLevelOneSongPlayed.volume = 1
-        //   console.log(this._lastLevelOneSongPlayed.effects)
-        //   this._lastLevelOneSongPlayed.play()
-        //
-        //   break
-        // case LEVEL_NAMES.LEVEL_4:
-        //
-        //   break
+        case LEVEL_NAMES.LEVEL_3:
+
+          // save effect
+          this._lastSoundLevel_3_withEffect = mainSoundData.randomSoundInLevel_withEffect
+
+          // set volume
+          mainSoundData.randomSoundInLevel.volume = scale_to({
+            num: scoreOfEntierDiscution,
+            in_min: -1,
+            in_max: -2,
+            out_min: .3,
+            out_max: 1
+          })
+
+          const effectVolumValue = scale_to({
+            num: scoreOfEntierDiscution,
+            in_min:   -1,
+            in_max:   -2,
+            out_min:  0.15,
+            out_max:  mainSoundVolume
+          })
+
+          this._lastSoundLevel_1_withEffect.volume = effectVolumValue
+          this._lastSoundLevel_2_withEffect.volume = effectVolumValue
+
+          this._lastSoundLevel_1_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
+            pan: -.75,
+          }))
+
+          this._lastSoundLevel_2_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
+            pan: .75,
+          }))
+
+          // play
+          if( this.lastSoundPlaying.main === null ||
+            ! this.lastSoundPlaying.main.playing) {
+              this.lastSoundPlaying.main =  mainSoundData.randomSoundInLevel
+                                            mainSoundData.randomSoundInLevel.play()
+          }
+
+          if( this.lastSoundPlaying.levelEffect_1 === null ||
+            ! this.lastSoundPlaying.levelEffect_1.playing) {
+              this.lastSoundPlaying.levelEffect_1 = this._lastSoundLevel_1_withEffect
+                                                    this._lastSoundLevel_1_withEffect.play()
+          }
+
+          if( this.lastSoundPlaying.levelEffect_2 === null ||
+            ! this.lastSoundPlaying.levelEffect_2.playing) {
+              this.lastSoundPlaying.levelEffect_2 = this._lastSoundLevel_2_withEffect
+                                                    this._lastSoundLevel_2_withEffect.play()
+          }
+
+          // debugger
+
+          break
+
+        case LEVEL_NAMES.LEVEL_4:
+
+          // save effect
+          this._lastSoundLevel_4_withEffect = mainSoundData.randomSoundInLevel_withEffect
+
+          // set volume
+          mainSoundData.randomSoundInLevel.volume = scale_to({
+            num: scoreOfEntierDiscution,
+            in_min: -1,
+            in_max: -2,
+            out_min: .3,
+            out_max: 1
+          })
+
+          this._lastSoundLevel_1_withEffect.volume = 1
+          this._lastSoundLevel_2_withEffect.volume = 1
+
+          this._lastSoundLevel_1_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
+            pan: -.75,
+          }))
+
+          this._lastSoundLevel_2_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
+            pan: .75,
+          }))
+
+          const effectVolumValue2 = scale_to({
+            num: scoreOfEntierDiscution,
+            in_min:   -1,
+            in_max:   -2,
+            out_min:  0.15,
+            out_max:  mainSoundVolume
+          })
+
+          this._lastSoundLevel_3_withEffect.volume = effectVolumValue2
+
+          // play
+          if( this.lastSoundPlaying.main === null ||
+            ! this.lastSoundPlaying.main.playing) {
+              this.lastSoundPlaying.main =  mainSoundData.randomSoundInLevel
+                                            mainSoundData.randomSoundInLevel.play()
+          }
+
+          if( this.lastSoundPlaying.levelEffect_1 === null ||
+            ! this.lastSoundPlaying.levelEffect_1.playing) {
+              this.lastSoundPlaying.levelEffect_1 = this._lastSoundLevel_1_withEffect
+                                                    this._lastSoundLevel_1_withEffect.play()
+          }
+
+          if( this.lastSoundPlaying.levelEffect_2 === null ||
+            ! this.lastSoundPlaying.levelEffect_2.playing) {
+              this.lastSoundPlaying.levelEffect_2 = this._lastSoundLevel_2_withEffect
+                                                    this._lastSoundLevel_2_withEffect.play()
+          }
+
+
+
+          if( this.lastSoundPlaying.levelEffect_3 === null ||
+            ! this.lastSoundPlaying.levelEffect_3.playing) {
+              this.lastSoundPlaying.levelEffect_3 = this._lastSoundLevel_3_withEffect
+                                                    this._lastSoundLevel_3_withEffect.play()
+          }
+
+          break
+
         // case LEVEL_NAMES.LEVEL_5:
+
+        default :
+          // set volume
+          mainSoundData.randomSoundInLevel.volume = mainSoundVolume
+
+          // play
+          mainSoundData.randomSoundInLevel.play()
       }
-
-      PizzicatoManager._removeEffectOfSound(mainSound)
-      mainSound.volume = mainSoundVolume
-
-
-      switch (level) {
-        case LEVEL_NAMES.LEVEL_1:
-          if(this._lastLevelOneSongPlayed && this._lastLevelTwoSoundPlayed) {
-
-            if(! this._lastLevelOneSongPlayed.playing && ! this._lastLevelTwoSoundPlayed.playing) {
-              mainSound.play()
-            } else {
-              console.info("%ca sound already played", "background: pink")
-            }
-
-          } else if (this._lastLevelOneSongPlayed) {
-
-            if(! this._lastLevelOneSongPlayed.playing) {
-              mainSound.play()
-            } else {
-              console.info("%ca sound already played", "background: pink")
-            }
-
-          } else {
-            mainSound.play()
-          }
-
-          break
-
-        case LEVEL_NAMES.LEVEL_2:
-          if(this._lastLevelTwoSoundPlayed) {
-
-            if(! this._lastLevelTwoSoundPlayed.playing) {
-              if(this._lastLevelOneSongPlayed) {
-                this._lastLevelOneSongPlayed.play()
-              }
-              mainSound.play()
-            } else {
-              console.info("%ca sound already played", "background: pink")
-            }
-
-          } else {
-            if(this._lastLevelOneSongPlayed) {
-              this._lastLevelOneSongPlayed.play()
-            }
-            mainSound.play()
-          }
-          break
-
-        default:
-          mainSound.play()
-      }
-
 
       console.log("=====")
-      console.log(this._lastLevelOneSongPlayed ? this._lastLevelOneSongPlayed.volume : null)
-      console.log(mainSound.volume)
+      // console.log(mainSoundData.volume)
       console.log("=====")
 
     } catch (e) {
+      // debugger
       console.info("%ccan't read file", "background: pink", e)
     }
   }
 
-  private static _removeEffectOfSound(sound: Sound) {
-    for(const effect of sound.effects) {
-      sound.removeEffect(effect)
-    }
-  }
+  getRandomSoundDataInLevel(level: LEVEL_NAMES) {
 
-  getRandomSoundInLevel(level: LEVEL_NAMES) {
+    const arrayOfAudioNameOfLevel       = this.AUDIO_DATA.listOfAudioFilesNameByLevel[level]
+    const randomEntryInLevel            = getRandomInt(0, arrayOfAudioNameOfLevel.length)
+    const randomAudioNameInLevel        = arrayOfAudioNameOfLevel[randomEntryInLevel]
+    const randomSoundInLevel            = this._listOfSound[randomAudioNameInLevel]
+    const randomSoundInLevel_withEffect = this._listOfSound["FX" + randomAudioNameInLevel]
 
-    const arrayOfAudioNameOfLevel = this.AUDIO_DATA.listOfAudioFilesNameByLevel[level]
-    const randomEntryInLevel      = getRandomInt(0, arrayOfAudioNameOfLevel.length)
-    const randomAudioNameInLevel  = arrayOfAudioNameOfLevel[randomEntryInLevel]
-    const randomSoundInLevel      = this._listOfSound[randomAudioNameInLevel]
+    console.log("randomAudioNameInLevel :" + randomAudioNameInLevel)
+    console.log("randomSoundInLevel_withEffect :" + "FX" + randomAudioNameInLevel)
+    console.log(this._listOfSound)
 
     return {
       arrayOfAudioNameOfLevel,
       randomEntryInLevel,
       randomAudioNameInLevel,
       randomSoundInLevel,
+      randomSoundInLevel_withEffect,
     }
   }
+}
 
-  scale_to_0_1(num: number, in_min: number, in_max: number, out_min = 0, out_max = 1) {
-    return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-  }
-
+function scale_to({num, in_min, in_max, out_min = 0, out_max = 1}: { num: number, in_min: number, in_max: number, out_min?: number, out_max?: number }) {
+  return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }

@@ -15,12 +15,16 @@ export async function getListOfAudioFiles(): Promise<ListOfAudioFiles> {
 }
 
 export enum LEVEL_NAMES {
-  LEVEL_0 = "Niveau_0",
-  LEVEL_1 = "Niveau_-1",
-  LEVEL_2 = "Niveau_-2",
-  LEVEL_3 = "Niveau_-3",
-  LEVEL_4 = "Niveau_-4",
-  LEVEL_5 = "Niveau_-5",
+  LEVEL_0   = "Niveau_0",
+  LEVEL_1   = "Niveau_-1",
+  FXLEVEL_1 = "FXNiveau_-1",
+  LEVEL_2   = "Niveau_-2",
+  FXLEVEL_2 = "FXNiveau_-2",
+  LEVEL_3   = "Niveau_-3",
+  FXLEVEL_3 = "FXNiveau_-3",
+  LEVEL_4   = "Niveau_-4",
+  FXLEVEL_4 = "FXNiveau_-4",
+  LEVEL_5   = "Niveau_-5",
 }
 
 export type ListOfAudioFiles = {
@@ -30,12 +34,16 @@ export type ListOfAudioFiles = {
 export function generateAudioData(listOfAudioFiles: ListOfAudioFiles): IAudioData {
 
   const listOfAudioFilesNameByLevel: ListOfAudioFilesNameByLevel = {
-    "Niveau_0"  : [],
-    "Niveau_-1" : [],
-    "Niveau_-2" : [],
-    "Niveau_-3" : [],
-    "Niveau_-4" : [],
-    "Niveau_-5" : [],
+    "Niveau_0"    : [],
+    "Niveau_-1"   : [],
+    "FXNiveau_-1" : [],
+    "Niveau_-2"   : [],
+    "FXNiveau_-2" : [],
+    "Niveau_-3"   : [],
+    "FXNiveau_-3" : [],
+    "Niveau_-4"   : [],
+    "FXNiveau_-4" : [],
+    "Niveau_-5"   : [],
   }
 
   const listOfSoundFilesUrl: ListOfSoundFilesUrl = {}
@@ -50,7 +58,9 @@ export function generateAudioData(listOfAudioFiles: ListOfAudioFiles): IAudioDat
 
     for(const audioFileName in listOfAudioFilesInLevel) {
 
-      const audioFileGeneratedName = `${audioFilesLevelName}_${audioFileName}`
+      const audioFileNameWithoutExtension = audioFileName.replace(/\.[^\.]{1,3}$/gm, "")
+
+      const audioFileGeneratedName = `${audioFilesLevelName}_${audioFileNameWithoutExtension}`
 
       const audioFilePath = "http://localhost:3000/static/" + listOfAudioFilesInLevel[audioFileName]
 

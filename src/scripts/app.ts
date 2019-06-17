@@ -31,9 +31,9 @@ export function runRecognitionApp(audioData: IAudioData, listen: ListenStatus, b
 
   const pizzicatoManager = new PizzicatoManager(audioData, "http://localhost:3000/static/")
 
-  pizzicatoManager.loadAudioFiles().then(() => {
+  pizzicatoManager.loadAudioFiles().then((value) => {
 
-
+    console.log(value)
 
     document.body.classList.add("sound-loaded")
 
@@ -43,26 +43,32 @@ export function runRecognitionApp(audioData: IAudioData, listen: ListenStatus, b
     document.querySelector(".r-button-ready")!.addEventListener("click", () => {
       console.log("clicked!!!")
 
-      babylonScene.startBlackBackgroundAnimation()
 
-      document.body.classList.add("recognition-active")
+      /**prod*/
+      // babylonScene.startBlackBackgroundAnimation()
+      //
+      // document.body.classList.add("recognition-active")
+      //
+      // useRecognition.active = true
 
-      useRecognition.active = true
+
+      /**debugg*/
+      let scoreSimulation = 0
+
+      document.addEventListener("click", (ev) => {
+
+        document.body.classList.add("recognition-active")
+
+        const incrementation = ev.altKey ? .2 : .5
+
+        if(ev.shiftKey) scoreSimulation += incrementation
+        else scoreSimulation -= incrementation
+
+        console.log(scoreSimulation)
+
+        pizzicatoManager.playLevel(getLevelName(scoreSimulation), scoreSimulation)
+      })
     })
-
-    let scoreSimulation = 0
-
-    // document.addEventListener("click", (ev) => {
-    //
-    //   const incrementation = ev.altKey ? .2 : .5
-    //
-    //   if(ev.shiftKey) scoreSimulation += incrementation
-    //   else scoreSimulation -= incrementation
-    //
-    //   console.log(scoreSimulation)
-    //
-    //   pizzicatoManager.playLevel(getLevelName(scoreSimulation), scoreSimulation)
-    // })
 
   })
 }

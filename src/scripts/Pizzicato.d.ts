@@ -16,9 +16,9 @@ declare module "Pizzicato" {
 
     clone(): void
 
-    addEffect (effect: any): void
+    addEffect (effect: Effects): void
 
-    removeEffect(effect: any): void
+    removeEffect(effect: Effects): void
 
     /**
      * min: 0, max: 1
@@ -44,9 +44,16 @@ declare module "Pizzicato" {
 
     on(event: 'play' | 'pause' | 'stop' | 'end', f: () => void): void
 
-    effects: any[]
+    effects: Effects[]
 
   }
+
+  export module Effects {
+    class StereoPanner {
+      constructor({pan}: { pan: number })
+    }
+  }
+  type Effects = Effects.StereoPanner
 
   const value: any
   export default value
