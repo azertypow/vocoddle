@@ -66,10 +66,10 @@ export class PizzicatoManager {
 
   }
 
-  private _lastSoundLevel_1_withEffect = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_1).randomSoundInLevel_withEffect
-  private _lastSoundLevel_2_withEffect = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_2).randomSoundInLevel_withEffect
-  private _lastSoundLevel_3_withEffect = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_3).randomSoundInLevel_withEffect
-  private _lastSoundLevel_4_withEffect = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_4).randomSoundInLevel_withEffect
+  private _lastSoundLevel_1_withEffect: Sound | undefined = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_1).randomSoundInLevel_withEffect
+  private _lastSoundLevel_2_withEffect: Sound | undefined = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_2).randomSoundInLevel_withEffect
+  private _lastSoundLevel_3_withEffect: Sound | undefined = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_3).randomSoundInLevel_withEffect
+  private _lastSoundLevel_4_withEffect: Sound | undefined = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_4).randomSoundInLevel_withEffect
 
   private lastSoundPlaying: {
     main:           Sound | null,
@@ -127,7 +127,7 @@ export class PizzicatoManager {
             out_max: 1
           })
 
-          this._lastSoundLevel_1_withEffect.volume = scale_to({
+          if(this._lastSoundLevel_1_withEffect) this._lastSoundLevel_1_withEffect.volume = scale_to({
             num: scoreOfEntierDiscution,
             in_min:   -1,
             in_max:   -2,
@@ -144,8 +144,8 @@ export class PizzicatoManager {
 
           if( this.lastSoundPlaying.levelEffect_1 === null ||
             ! this.lastSoundPlaying.levelEffect_1.playing) {
-              this.lastSoundPlaying.levelEffect_1 = this._lastSoundLevel_1_withEffect
-                                                    this._lastSoundLevel_1_withEffect.play()
+              this.lastSoundPlaying.levelEffect_1 = this._lastSoundLevel_1_withEffect ? this._lastSoundLevel_1_withEffect : null
+              if(this._lastSoundLevel_1_withEffect) this._lastSoundLevel_1_withEffect.play()
           }
 
           // debugger
@@ -174,14 +174,16 @@ export class PizzicatoManager {
             out_max:  mainSoundVolume
           })
 
-          this._lastSoundLevel_1_withEffect.volume = effectVolumValue
-          this._lastSoundLevel_2_withEffect.volume = effectVolumValue
+          if(this._lastSoundLevel_1_withEffect) this._lastSoundLevel_1_withEffect.volume = effectVolumValue
+          else console.info("can't load sound _lastSoundLevel_1_withEffect")
+          if(this._lastSoundLevel_2_withEffect) this._lastSoundLevel_2_withEffect.volume = effectVolumValue
+          else console.info("can't load sound _lastSoundLevel_2_withEffect")
 
-          this._lastSoundLevel_1_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
+          if(this._lastSoundLevel_1_withEffect) this._lastSoundLevel_1_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
             pan: -.75,
           }))
 
-          this._lastSoundLevel_2_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
+          if(this._lastSoundLevel_2_withEffect) this._lastSoundLevel_2_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
             pan: .75,
           }))
 
@@ -194,14 +196,14 @@ export class PizzicatoManager {
 
           if( this.lastSoundPlaying.levelEffect_1 === null ||
             ! this.lastSoundPlaying.levelEffect_1.playing) {
-              this.lastSoundPlaying.levelEffect_1 = this._lastSoundLevel_1_withEffect
-                                                    this._lastSoundLevel_1_withEffect.play()
+              this.lastSoundPlaying.levelEffect_1 = this._lastSoundLevel_1_withEffect ? this._lastSoundLevel_1_withEffect : null
+              if(this._lastSoundLevel_1_withEffect) this._lastSoundLevel_1_withEffect.play()
           }
 
           if( this.lastSoundPlaying.levelEffect_2 === null ||
             ! this.lastSoundPlaying.levelEffect_2.playing) {
-              this.lastSoundPlaying.levelEffect_2 = this._lastSoundLevel_2_withEffect
-                                                    this._lastSoundLevel_2_withEffect.play()
+              this.lastSoundPlaying.levelEffect_2 = this._lastSoundLevel_2_withEffect ? this._lastSoundLevel_2_withEffect : null
+              if(this._lastSoundLevel_2_withEffect) this._lastSoundLevel_2_withEffect.play()
           }
 
           // debugger
@@ -222,14 +224,16 @@ export class PizzicatoManager {
             out_max: 1
           })
 
-          this._lastSoundLevel_1_withEffect.volume = 1
-          this._lastSoundLevel_2_withEffect.volume = 1
+          if(this._lastSoundLevel_1_withEffect) this._lastSoundLevel_1_withEffect.volume = 1
+          else console.info("can't load sound _lastSoundLevel_1_withEffect")
+          if(this._lastSoundLevel_2_withEffect) this._lastSoundLevel_2_withEffect.volume = 1
+          else console.info("can't load sound _lastSoundLevel_2_withEffect")
 
-          this._lastSoundLevel_1_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
+          if(this._lastSoundLevel_1_withEffect) this._lastSoundLevel_1_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
             pan: -.75,
           }))
 
-          this._lastSoundLevel_2_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
+          if(this._lastSoundLevel_2_withEffect) this._lastSoundLevel_2_withEffect.addEffect(new Pizzicato.Effects.StereoPanner({
             pan: .75,
           }))
 
@@ -241,7 +245,8 @@ export class PizzicatoManager {
             out_max:  mainSoundVolume
           })
 
-          this._lastSoundLevel_3_withEffect.volume = effectVolumValue2
+          if(this._lastSoundLevel_3_withEffect) this._lastSoundLevel_3_withEffect.volume = effectVolumValue2
+          else console.info("can't load sound _lastSoundLevel_3_withEffect")
 
           // play
           if( this.lastSoundPlaying.main === null ||
@@ -252,22 +257,22 @@ export class PizzicatoManager {
 
           if( this.lastSoundPlaying.levelEffect_1 === null ||
             ! this.lastSoundPlaying.levelEffect_1.playing) {
-              this.lastSoundPlaying.levelEffect_1 = this._lastSoundLevel_1_withEffect
-                                                    this._lastSoundLevel_1_withEffect.play()
+              this.lastSoundPlaying.levelEffect_1 = this._lastSoundLevel_1_withEffect ? this._lastSoundLevel_1_withEffect : null
+              if(this._lastSoundLevel_1_withEffect) this._lastSoundLevel_1_withEffect.play()
           }
 
           if( this.lastSoundPlaying.levelEffect_2 === null ||
             ! this.lastSoundPlaying.levelEffect_2.playing) {
-              this.lastSoundPlaying.levelEffect_2 = this._lastSoundLevel_2_withEffect
-                                                    this._lastSoundLevel_2_withEffect.play()
+              this.lastSoundPlaying.levelEffect_2 = this._lastSoundLevel_2_withEffect ? this._lastSoundLevel_2_withEffect : null
+              if(this._lastSoundLevel_2_withEffect) this._lastSoundLevel_2_withEffect.play()
           }
 
 
 
           if( this.lastSoundPlaying.levelEffect_3 === null ||
             ! this.lastSoundPlaying.levelEffect_3.playing) {
-              this.lastSoundPlaying.levelEffect_3 = this._lastSoundLevel_3_withEffect
-                                                    this._lastSoundLevel_3_withEffect.play()
+              this.lastSoundPlaying.levelEffect_3 = this._lastSoundLevel_3_withEffect ? this._lastSoundLevel_3_withEffect : null
+              if(this._lastSoundLevel_3_withEffect) this._lastSoundLevel_3_withEffect.play()
           }
 
           break
