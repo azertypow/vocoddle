@@ -72,3 +72,11 @@ function startApplication() {
   }
 
 }
+
+const allReloaderApp = document.querySelectorAll(".r-reloader-app")
+
+allReloaderApp.forEach(reloaderElement => {
+  if(reloaderElement instanceof HTMLElement) {
+    reloaderElement.addEventListener("click", () => {document.location.reload(true);})
+  }
+})

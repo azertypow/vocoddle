@@ -92,15 +92,15 @@ function activeRecognition(recognition: SpeechRecognition, listen: ListenStatus,
         const confidence = result.confidence
         const transcript = result.transcript.toLowerCase()
 
-        console.log(ev)
-        console.log(result)
+        // console.log(ev)
+        // console.log(result)
 
-        console.log("passé: \t", transcript)
+        // console.log("passé: \t", transcript)
 
         const score = analyse(positiveAndNegativeWordsList, transcript)
 
-        console.log(score.scoreOfEntierDiscution)
-        console.log(score.scoreOnLastElements)
+        // console.log(score.scoreOfEntierDiscution)
+        // console.log(score.scoreOnLastElements)
 
         // runAudio(score.scoreOfEntierDiscution, audioData)
 
@@ -108,11 +108,11 @@ function activeRecognition(recognition: SpeechRecognition, listen: ListenStatus,
 
         const levelName = getLevelName(score.scoreOnLastElements)
 
-        console.log(levelName)
+        // console.log(levelName)
 
         pizzicatoManager.playLevel(levelName, score.scoreOfEntierDiscution)
 
-        debugInterface.setAnalyseResponseView(score)
+        // debugInterface.setAnalyseResponseView(score)
       }
     }
 

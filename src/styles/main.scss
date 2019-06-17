@@ -216,9 +216,9 @@ h4 {
   $timingFunction: cubic-bezier(0.35, 0, 0, 1);
   $delay: 2s;
 
-  cursor: pointer;
-  transition: color $time $timingFunction $delay;
-  color: darkgrey;
+  cursor: none;
+  transition: opacity $time $timingFunction $delay;
+  opacity: 0.5;
 
   &.with-arrow {
     &:after {
@@ -266,9 +266,11 @@ h4 {
 
   }
 }
-.sound-loaded {}
-.r-button-ready {
-
+.sound-loaded {
+  .r-button-ready {
+    opacity: 1;
+    cursor: pointer;
+  }
 }
 
 .r-button {
@@ -326,5 +328,7 @@ h4 {
 //.page-4 {display: none}
 
 // menu avec un a propos
+
+.r-reloader-app {cursor: pointer}
 
 @import "./intro-animation";

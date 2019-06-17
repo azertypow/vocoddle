@@ -6,7 +6,11 @@
   "scripts": {
     "coding-game-samples": "",
     "api-server": "node api/server.js",
-    "dev": "parcel src/index.html & npm run api-server"
+    "dev": "parcel src/index.html & npm run api-server",
+    "build": "rm -rf ./api/app/ && parcel build src/index.html --out-dir api/app/ --public-url 'http://localhost:3000/app/'",
+    "app": "npm run api-server &  npm run app:open",
+    "server": "npm run api-server",
+    "app:open": "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --app=http://localhost:3000/app"
   },
   "author": "",
   "license": "ISC",

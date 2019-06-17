@@ -1,3 +1,15 @@
+## run app
+
+sur all dependencies are installed
+
+```npm install```
+
+run server
+
+```npm run server```
+
+open url ```http://localhost:3000/app``` on chrome
+
 ## install
 
 ### install dependencies

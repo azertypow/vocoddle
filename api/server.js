@@ -15,6 +15,8 @@ app.use(function(req, res, next) {
 
 app.use('/static', express.static('api/public'));
 
+app.use('/app', express.static('api/app'));
+
 app.get("/", (req, res, next) => {
     getFiles("api/public", AUDIO_DIRECTORY).then((arrayOfFiles) => {
         res.json(arrayOfFiles)
