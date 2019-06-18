@@ -40,11 +40,13 @@ $intro-delay: 1s;
 .anim-intro-end {
   .logo-underline {
     transform: translate3d(-100%, 0, 0);
+    transition-delay: 0s;
   }
 
   .logo-baseline {
     transform: translate3d(-25%, 0, 0);
     opacity: 0;
+    transition-delay: 0s;
   }
 }
 
@@ -115,6 +117,6 @@ $page-transition-delay: 500ms;
     transition: opacity ($page-transition-duration - $page-transition-delay) $page-transition-delay ease-in-out;
   }
 
-  background-color: black;
+  background-color: $color-secondary;
   transition: background-color ($page-transition-duration - $page-transition-delay) $page-transition-delay ease-in-out;
 }

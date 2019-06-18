@@ -32,41 +32,52 @@ function startApplication() {
     audioFileLoaderIsNotStarted = false
     getListOfAudioFiles().then( (listOfAudioFiles) => {
 
-      document.querySelector(".anim-intro-to")!.classList.add("anim-intro-end")
+      document.querySelector(".current-page-is-0")!.classList.add("list-of-audio-files-loaded")
 
-      window.setTimeout(() => {
-        babylonScene.startMoveToLeftAnimation()
-      }, 900)
+      document.querySelector(".r-button-skip-intro")!.addEventListener("click", () => {
 
-      window.setTimeout(() => {
-        document.querySelector(".current-page-is-0")!.classList.add("current-page-is-1")
-      }, 1500)
 
-      let listen = new ListenStatus(() => {
-        console.log("change!!!")
+
+        document.querySelector(".anim-intro-to")!.classList.add("anim-intro-end")
+
+        // window.setTimeout(() => {
+          babylonScene.startMoveToLeftAnimation()
+        // }, 250)
+
+        window.setTimeout(() => {
+          document.querySelector(".current-page-is-0")!.classList.add("current-page-is-1")
+        }, 500)
+
+        let listen = new ListenStatus(() => {
+          console.log("change!!!")
+        })
+
+        // document.addEventListener("mousedown", () => {
+        //   listen.active = false
+        //   console.log("down")
+        //   document.body.classList.add("listen-off")
+        // })
+
+        // document.addEventListener("mouseup", () => {
+        //   listen.active = true
+        //   console.log("up")
+        //   document.body.classList.remove("listen-off")
+        // })
+
+        const audioData = generateAudioData(listOfAudioFiles)
+
+        document.querySelector(".r-button-start")!.addEventListener("click", () => {
+          document.querySelector(".current-page-is-0")!.classList.add("current-page-is-2")
+
+          babylonScene.startHeaderEntryAnimation()
+
+          if (speachRecognitionIsNotStarting) runRecognitionApp(audioData, listen, babylonScene)
+        })
+
+
+
       })
 
-      // document.addEventListener("mousedown", () => {
-      //   listen.active = false
-      //   console.log("down")
-      //   document.body.classList.add("listen-off")
-      // })
-
-      // document.addEventListener("mouseup", () => {
-      //   listen.active = true
-      //   console.log("up")
-      //   document.body.classList.remove("listen-off")
-      // })
-
-      const audioData = generateAudioData(listOfAudioFiles)
-
-      document.querySelector(".r-button-start")!.addEventListener("click", () => {
-        document.querySelector(".current-page-is-0")!.classList.add("current-page-is-2")
-
-        babylonScene.startHeaderEntryAnimation()
-
-        if (speachRecognitionIsNotStarting) runRecognitionApp(audioData, listen, babylonScene)
-      })
 
     })
   }

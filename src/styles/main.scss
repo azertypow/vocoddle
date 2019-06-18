@@ -211,14 +211,34 @@ h4 {
   cursor: pointer;
 }
 
+.r-button-skip-intro {
+  display: block;
+  position: fixed;
+  left: 50%;
+  bottom: 25%;
+  transform: translate(-50%, 50%);
+  cursor: pointer;
+
+  transition: opacity 500ms ease-in-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.list-of-audio-files-loaded {
+  .r-button-skip-intro {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 .r-button-ready {
   $time: 1s;
   $timingFunction: cubic-bezier(0.35, 0, 0, 1);
-  $delay: 2s;
+  $delay: 250ms;
 
   cursor: none;
   transition: opacity $time $timingFunction $delay;
-  opacity: 0.5;
+  opacity: 0;
 
   &.with-arrow {
     &:after {
@@ -266,7 +286,22 @@ h4 {
 
   }
 }
+
+.r-chargement {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%);
+  margin: 0;
+  color: white;
+  opacity: 0.25;
+}
+
 .sound-loaded {
+  .r-chargement {
+    display: none;
+  }
+
   .r-button-ready {
     opacity: 1;
     cursor: pointer;

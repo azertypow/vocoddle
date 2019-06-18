@@ -266,9 +266,9 @@ export class ObjectScene {
     keys.push({
       frame: animationDuration,
       value: new BABYLON.Color3(
-        0,
-        0,
-        0,
+        0.1294117647,  // 33
+        0.2823529412,  // 72
+        0.6705882353,  // 171
       )
     });
 
