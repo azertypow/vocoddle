@@ -85,6 +85,8 @@ export class PizzicatoManager {
     levelEffect_4: null,
   }
 
+  private positive = this.getRandomSoundDataInLevel(LEVEL_NAMES.LEVEL_0).randomSoundInLevel
+
   playLevel(level: LEVEL_NAMES, scoreOfEntierDiscution: number) {
 
     try {
@@ -281,10 +283,10 @@ export class PizzicatoManager {
 
         default :
           // set volume
-          mainSoundData.randomSoundInLevel.volume = mainSoundVolume
+          this.positive.volume = 1
 
           // play
-          mainSoundData.randomSoundInLevel.play()
+          this.positive.play()
       }
 
       console.log("=====")
